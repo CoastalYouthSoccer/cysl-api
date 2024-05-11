@@ -4,18 +4,16 @@ from sys import exit
 import logging
 
 from sqlmodel import SQLModel, create_engine
-from sqlmodel.ext.asyncio.session import AsyncSession, AsyncEngine
+from sqlalchemy.ext.asyncio import AsyncSession, AsyncEngine
 
+from app.config import get_settings
 from sqlalchemy.orm import sessionmaker
 
 logger = logging.getLogger(__name__)
 
-DATABASE_URL = environ.get("DATABASE_URL")
-if DATABASE_URL is None:
-    logger.error("DATABASE_URL environment variable not set")
-    exit(99)
+config = get_settings()
 
-engine = AsyncEngine(create_engine(DATABASE_URL, echo=True, future=True))
+engine = AsyncEngine(create_engine(config.database_url, echo=True, future=True))
 
 async def init_db():
     async with engine.begin() as conn:

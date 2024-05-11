@@ -1,10 +1,9 @@
 from datetime import datetime, date
-from uuid import uuid4
+import uuid
+
 from typing import Optional
-from sqlalchemy.sql import expression
 
 from sqlmodel import SQLModel, Field
-
 
 class SeasonBase(SQLModel):
     name: str
@@ -15,7 +14,8 @@ class SeasonBase(SQLModel):
 
 class Season(SeasonBase, table=True):
     __tablename__: str = 'season'
-    id: uuid4 = Field(primary_key=True, default=uuid4)
+    id: uuid.UUID = Field(default_factory=uuid.uuid4,
+                            primary_key=True)
 
 
 class SeasonCreate(SeasonBase):
@@ -48,8 +48,8 @@ class MisconductBase(SQLModel):
 
 class Misconduct(MisconductBase, table=True):
     __tablename__: str = 'misconduct'
-    id: uuid4 = Field(primary_key=True, default=uuid4)
-
+    id: uuid.UUID = Field(default_factory=uuid.uuid4,
+                            primary_key=True)
 
 class MisconductCreate(MisconductBase):
     pass
