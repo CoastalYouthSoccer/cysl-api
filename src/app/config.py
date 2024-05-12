@@ -9,9 +9,9 @@ class Settings(BaseSettings):
     auth0_algorithms: str
     database_url: str
     log_level: int = 30
+    model_config = SettingsConfigDict(env_file=environ.get("ENV_FILE", ".env"),
+                                      extra="ignore")
 
-    class Config:
-        env_file = environ.get("ENV_FILE", ".env")
 
 def get_settings():
     return Settings()

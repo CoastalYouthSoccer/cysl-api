@@ -39,13 +39,13 @@ async def pong():
 async def read_seasons(db: AsyncSession=Depends(get_session), skip: int=0, limit: int=100):
     return await get_seasons(db, skip=skip, limit=limit)
 
-@app.post("/season", response_model=SeasonCreate, status_code=201)
+@app.post("/seasons", response_model=SeasonCreate, status_code=201)
 async def new_season(item: SeasonCreate, db: Session=Depends(get_session),
                _: str = Security(auth.verify,
                                  scopes=['write:season'])):
     return await create_season(db, item=item)
 
-@app.delete("/season/{id}")
+@app.delete("/seasons/{id}")
 async def delete_season(id: UUID4, db: Session=Depends(get_session),
                   _: str = Security(auth.verify,
                                     scopes=['delete:season'])):
@@ -55,7 +55,7 @@ async def delete_season(id: UUID4, db: Session=Depends(get_session),
                             detail=f"Failed to Delete, {id}!")
     return {"id": id}
 
-@app.post("/misconduct", response_model=Misconduct, status_code=201)
+@app.post("/misconducts", response_model=Misconduct, status_code=201)
 async def new_misconduct(item: MisconductCreate, db: Session=Depends(get_session),
                     _: str = Security(auth.verify,
                     scopes=['write:misconduct'])):
