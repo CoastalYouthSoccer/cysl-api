@@ -8,7 +8,18 @@ from fastapi.security import SecurityScopes, HTTPAuthorizationCredentials, HTTPB
 
 logger = logging.getLogger(__name__)
 
-from app.config import get_settings
+def set_boolean_value(value):
+    if value is None:
+        return False
+    return value.lower() in ['true', '1', 't', 'y', 'yes']
+
+def format_date_yyyy_mm_dd(date) -> str:
+    formatted_date = None
+    try:
+        formatted_date = date.strftime("%Y-%m-%d")
+    except Exception as e:
+        logger.error(f"Failed to format date: {date}, error: {e}")
+    return formatted_date
 
 
 class UnauthorizedException(HTTPException):
@@ -25,15 +36,18 @@ class UnauthenticatedException(HTTPException):
 
 
 class VerifyToken:
-    def __init__(self):
-        self.config = get_settings()
+    def __init__(self, auth0_domain, auth0_algorithms, auth0_api_audience,
+                 auth0_issuer):
+        self.auth0_domain = auth0_domain
+        self.auth0_algorithms = auth0_algorithms
+        self.auth0_api_audience = auth0_api_audience
+        self.auth0_issuer = auth0_issuer
 
         # This gets the JWKS from a given URL and does processing so you can
         # use any of the keys available
-        jwks_url = f'https://{self.config.auth0_domain}/.well-known/jwks.json'
+        jwks_url = f'https://{self.auth0_domain}/.well-known/jwks.json'
         self.jwks_client = jwt.PyJWKClient(jwks_url)
 
-        # 👇 new code
     async def verify(self,
                      security_scopes: SecurityScopes,
                      token: Optional[HTTPAuthorizationCredentials] = Depends(HTTPBearer())
@@ -55,9 +69,9 @@ class VerifyToken:
             payload = jwt.decode(
                 token.credentials,
                 signing_key,
-                algorithms=self.config.auth0_algorithms,
-                audience=self.config.auth0_api_audience,
-                issuer=self.config.auth0_issuer,
+                algorithms=self.auth0_algorithms,
+                audience=self.auth0_api_audience,
+                issuer=self.auth0_issuer,
             )
         except Exception as error:
             raise UnauthorizedException(str(error))

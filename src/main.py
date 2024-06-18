@@ -9,12 +9,15 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import Session
 
 from app.crud import (get_seasons, create_season, deactivate_season,
-                      create_misconduct, get_misconducts)
-from app.schemas import (Season, SeasonCreate, Misconduct, MisconductCreate)
+                      create_misconduct, get_misconducts, get_associations,
+                      deactivate_association, create_association)
+from app.schemas import (Season, SeasonCreate, Misconduct, MisconductCreate,
+                         Association, AssociationCreate, Venue)
+from app.assignr.assignr import Assignr
 
 from app.config import get_settings
 
-from app.utils import VerifyToken
+from app.helpers.helpers import VerifyToken
 
 config = get_settings()
 
@@ -25,7 +28,11 @@ logger = logging.getLogger(__name__)
 from app.database import get_session
 
 token_auth_scheme = HTTPBearer()
-auth = VerifyToken() 
+auth = VerifyToken(config.auth0_domain, config.auth0_algorithms,
+                   config.auth0_api_audience, config.auth0_issuer)
+assignr = Assignr(config.assignr_client_id, config.assignr_client_secret,
+                  config.assignr_client_scope, config.assignr_base_url,
+                  config.assignr_auth_url)
 
 app = FastAPI()
 
@@ -33,6 +40,32 @@ app = FastAPI()
 @app.get("/ping")
 async def pong():
     return {"ping": "pong!"}
+
+# venue endpoints
+@app.get("/venues", response_model=list[Venue])
+def read_venues():
+    return assignr.get_venues()
+
+# association endpoints
+@app.get("/associations", response_model=list[Association])
+async def read_associations(db: AsyncSession=Depends(get_session), skip: int=0, limit: int=100):
+    return await get_associations(db, skip=skip, limit=limit)
+
+@app.post("/associations", response_model=AssociationCreate, status_code=201)
+async def new_association(item: AssociationCreate, db: Session=Depends(get_session),
+               _: str = Security(auth.verify,
+                                 scopes=['write:association'])):
+    return await create_association(db, item=item)
+
+@app.delete("/associations/{id}")
+async def delete_association(id: UUID4, db: Session=Depends(get_session),
+                  _: str = Security(auth.verify,
+                                    scopes=['delete:association'])):
+    error = await deactivate_association(db, id=id)
+    if error:
+        raise HTTPException(status_code=400,
+                            detail=f"Failed to Delete Association, {id}!")
+    return {"id": id}
 
 # season endpoints
 @app.get("/seasons", response_model=list[Season])

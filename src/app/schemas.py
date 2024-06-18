@@ -25,6 +25,11 @@ class BaseCreate(BaseModel):
     pass
 
 
+class Venue(BaseModel):
+    id: int
+    name: str
+
+
 class Season(BaseModel):
     id: UUID4
     name: Annotated[str, StringConstraints(max_length=100)]
@@ -96,3 +101,20 @@ class MisconductCreate(BaseModel):
     minute: int
     offense: str
     description: str
+
+
+class Association(BaseModel):
+    id: UUID4
+    name: Annotated[str, StringConstraints(max_length=100)]
+    active: bool
+
+    class Config:
+        from_attributes = True
+
+
+class AssociationCreate(BaseCreate):
+    name: str
+    active: Optional[bool] = True
+
+    class Config:
+        from_attributes = True

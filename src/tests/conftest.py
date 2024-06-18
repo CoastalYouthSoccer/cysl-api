@@ -1,4 +1,7 @@
 import pytest
+import jwt
+from datetime import datetime, timedelta
+
 #from asyncio import get_event_loop
 
 from starlette.testclient import TestClient
@@ -6,13 +9,31 @@ from os.path import (join, abspath, dirname)
 import json
 from sqlalchemy import insert, MetaData
 
-from app.models import (Season, Misconduct)
+from app.models import (Season, Misconduct, Association)
 #from app.database import init_db, get_session
 from main import app
 
 seed_info = {
-    "season": Season, "misconduct": Misconduct
+    "season": Season, "misconduct": Misconduct,
+    "association": Association
 }
+
+def mock_auth0_token(permissions=[]):
+    secret_key = 'your-secret-key'
+
+    payload = {
+        "iss": "https://test-auth0-domain.auth0.com/",
+        "sub": "auth0|1234567890",
+        "aud": ["your-client-id", "https://test-api-endpoint.com"],
+        "exp": datetime.utcnow() + timedelta(days=1),
+        "iat": datetime.utcnow(),
+        "name": "John Doe",
+        "email": "john.doe@example.com",
+        "permissions": permissions
+    }
+
+    token = jwt.encode(payload, secret_key, algorithm='HS256')
+    return token
 
 @pytest.fixture(scope="module")
 def test_app():

@@ -1,3 +1,4 @@
+from unittest.mock import patch
 
 NOT_AUTHENTICATED = {"detail": "Not authenticated"}
 
