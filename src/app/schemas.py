@@ -1,10 +1,8 @@
 from enum import Enum
-from datetime import date, datetime
+from datetime import date, datetime, time
 from typing import Optional
-from pydantic import BaseModel, ConfigDict, StringConstraints, UUID4
+from pydantic import BaseModel, StringConstraints, UUID4
 from typing_extensions import Annotated
-
-#from pydantic_extra_types import phone_numbers
 
 
 class GameStatus(Enum):
@@ -28,6 +26,7 @@ class BaseCreate(BaseModel):
 class Venue(BaseModel):
     id: int
     name: str
+    city: str | None
 
 
 class Season(BaseModel):
@@ -115,6 +114,33 @@ class Association(BaseModel):
 class AssociationCreate(BaseCreate):
     name: str
     active: Optional[bool] = True
+
+    class Config:
+        from_attributes = True
+
+
+class RefereeAssignment(BaseModel):
+    accepted: bool
+    position: Optional[str]
+    first_name: Optional[str]
+    last_name: Optional[str]
+
+    class Config:
+        from_attributes = True
+
+
+class Game(BaseModel):
+    officials: Optional[list[RefereeAssignment]] = None
+    game_date: str
+    game_time: str
+    home_team: str
+    away_team: str
+    venue: str
+    sub_venue: Optional[str]
+    game_type: Optional[str]
+    age_group: str
+    gender: str
+    assignor: Optional[str]
 
     class Config:
         from_attributes = True

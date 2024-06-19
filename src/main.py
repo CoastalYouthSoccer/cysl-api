@@ -3,6 +3,7 @@ import logging
 
 from fastapi import FastAPI, Depends, Security, HTTPException
 from fastapi.security import HTTPBearer, SecurityScopes
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import UUID4
 
 from sqlmodel.ext.asyncio.session import AsyncSession
@@ -12,7 +13,7 @@ from app.crud import (get_seasons, create_season, deactivate_season,
                       create_misconduct, get_misconducts, get_associations,
                       deactivate_association, create_association)
 from app.schemas import (Season, SeasonCreate, Misconduct, MisconductCreate,
-                         Association, AssociationCreate, Venue)
+                         Association, AssociationCreate, Venue, Game)
 from app.assignr.assignr import Assignr
 
 from app.config import get_settings
@@ -36,6 +37,18 @@ assignr = Assignr(config.assignr_client_id, config.assignr_client_secret,
 
 app = FastAPI()
 
+origins = [
+    "http://localhost:3000",
+    "http://localhost:8080"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/ping")
 async def pong():
@@ -45,6 +58,13 @@ async def pong():
 @app.get("/venues", response_model=list[Venue])
 def read_venues():
     return assignr.get_venues()
+
+# game endpoints
+@app.get("/games", response_model=list[Game])
+def read_games(start_dt: str, end_dt: str, league: str | None = None,
+               venue: str | None = None):
+    return assignr.get_games(start_dt=start_dt, end_dt=end_dt,
+                             league=league, venue=venue)
 
 # association endpoints
 @app.get("/associations", response_model=list[Association])
