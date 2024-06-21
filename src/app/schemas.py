@@ -1,6 +1,6 @@
 from enum import Enum
 from datetime import date, datetime, time
-from typing import Optional
+from typing import Optional, Dict
 from pydantic import BaseModel, StringConstraints, UUID4
 from typing_extensions import Annotated
 
@@ -129,18 +129,20 @@ class RefereeAssignment(BaseModel):
         from_attributes = True
 
 
-class Game(BaseModel):
+class VenueGame(BaseModel):
     officials: Optional[list[RefereeAssignment]] = None
-    game_date: str
-    game_time: str
     home_team: str
     away_team: str
-    venue: str
-    sub_venue: Optional[str]
-    game_type: Optional[str]
     age_group: str
     gender: str
-    assignor: Optional[str]
 
     class Config:
         from_attributes = True
+
+
+class GameTimes(BaseModel):
+    games: Dict[str, VenueGame]
+
+
+class VenueSchedule(BaseModel):
+    fields: Dict[str, GameTimes]
