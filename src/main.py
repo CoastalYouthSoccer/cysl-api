@@ -40,7 +40,7 @@ app = FastAPI()
 
 origins = [
     "http://localhost:3000",
-    "http://localhost:8080"
+    "http://localhost:5173"
 ]
 
 app.add_middleware(
@@ -62,7 +62,10 @@ def read_venues():
 
 # game endpoints
 @app.get("/games", response_model=Dict[str, Dict[str, VenueGame]])
-def read_games(start_dt: str, end_dt: str, venue: str | None = None):
+def read_games(start_dt: str, end_dt: str, venue: str | None = None,
+    _: str = Security(auth.verify,
+                                 scopes=['read:games']
+    )):
     return assignr.get_games_venue(start_dt=start_dt, end_dt=end_dt,
                                    venue=venue)
 
