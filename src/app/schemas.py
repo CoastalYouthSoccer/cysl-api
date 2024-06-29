@@ -1,10 +1,8 @@
 from enum import Enum
-from datetime import date, datetime
-from typing import Optional
-from pydantic import BaseModel, ConfigDict, StringConstraints, UUID4
+from datetime import date, datetime, time
+from typing import Optional, Dict
+from pydantic import BaseModel, StringConstraints, UUID4
 from typing_extensions import Annotated
-
-#from pydantic_extra_types import phone_numbers
 
 
 class GameStatus(Enum):
@@ -23,6 +21,12 @@ class Base(BaseModel):
 
 class BaseCreate(BaseModel):
     pass
+
+
+class Venue(BaseModel):
+    id: int
+    name: str
+    city: str | None
 
 
 class Season(BaseModel):
@@ -96,3 +100,49 @@ class MisconductCreate(BaseModel):
     minute: int
     offense: str
     description: str
+
+
+class Association(BaseModel):
+    id: UUID4
+    name: Annotated[str, StringConstraints(max_length=100)]
+    active: bool
+
+    class Config:
+        from_attributes = True
+
+
+class AssociationCreate(BaseCreate):
+    name: str
+    active: Optional[bool] = True
+
+    class Config:
+        from_attributes = True
+
+
+class RefereeAssignment(BaseModel):
+    accepted: bool
+    position: Optional[str]
+    first_name: Optional[str]
+    last_name: Optional[str]
+
+    class Config:
+        from_attributes = True
+
+
+class VenueGame(BaseModel):
+    officials: Optional[list[RefereeAssignment]] = None
+    home_team: str
+    away_team: str
+    age_group: str
+    gender: str
+
+    class Config:
+        from_attributes = True
+
+
+class GameTimes(BaseModel):
+    games: Dict[str, VenueGame]
+
+
+class VenueSchedule(BaseModel):
+    fields: Dict[str, GameTimes]

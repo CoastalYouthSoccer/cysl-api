@@ -1,5 +1,7 @@
 # CYSL Web Backend
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=CoastalYouthSoccer_cysl-backend&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=CoastalYouthSoccer_cysl-backend)
+
 ## Database Migrations
 
 ### Alembic Init

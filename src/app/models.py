@@ -54,3 +54,17 @@ class Misconduct(MisconductBase, table=True):
 class MisconductCreate(MisconductBase):
     pass
 
+
+class AssociationBase(SQLModel):
+    name: str
+    active: bool
+
+
+class Association(AssociationBase, table=True):
+    __tablename__: str = 'association'
+    id: uuid.UUID = Field(default_factory=uuid.uuid4,
+                            primary_key=True)
+
+
+class AssociationCreate(AssociationBase):
+    pass

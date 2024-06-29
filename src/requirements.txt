@@ -3,7 +3,8 @@ asyncpg==0.29.0
 fastapi==0.111.0
 #phonenumbers==8.13.31
 #pydantic-extra-types==2.6.0
-#pydantic-settings==2.2.1
-#pyjwt[crypto]==2.8.0
+pydantic-settings==2.2.1
+pyjwt[crypto]==2.8.0
+requests==2.32.3
 sqlmodel==0.0.18
 uvicorn[standard]==0.29.0
