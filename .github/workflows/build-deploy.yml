@@ -1,4 +1,4 @@
-name: Build CYSL Website
+name: Build and Deploy CYSL Backend
 
 on:
   push:
@@ -15,7 +15,7 @@ defaults:
     working-directory: src
 
 jobs:    
-  build:
+  build_deploy:
     runs-on: ubuntu-latest
 
     strategy:
@@ -53,3 +53,24 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+    - name: Deploy to Server
+    #      if: github.ref == 'refs/heads/main'
+      uses: easingthemes/ssh-deploy@main
+      env:
+        TARGET_DIR: ${{ vars.DEPLOY_TARGET }}/backend-files/${{ github.sha }} 
+      with:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        ARGS: "-rlgoDzvc -i"
+        SOURCE: "src/"
+        EXCLUDE: "tests/, __pycache__"
+        REMOTE_HOST: ${{ vars.DEPLOY_HOST }}
+        REMOTE_USER: ${{ vars.DEPLOY_USER }}
+        TARGET: ${{env.TARGET_DIR }}
+        SCRIPT_BEFORE: |
+          sudo mkdir -p ${{ env.TARGET_DIR }}
+          sudo chmod 777 -R ${{ env.TARGET_DIR }}
+        SCRIPT_AFTER: |
+          ls -l
+          sudo ./update_cysl_backend.sh ${{ github.sha }}
+        
