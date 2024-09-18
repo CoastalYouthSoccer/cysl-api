@@ -38,10 +38,8 @@ assignr = Assignr(config.assignr_client_id, config.assignr_client_secret,
 
 app = FastAPI()
 
-origins = [
-    "http://localhost:3000",
-    "http://localhost:5173"
-]
+
+origins = config.http_origins.split()
 
 app.add_middleware(
     CORSMiddleware,

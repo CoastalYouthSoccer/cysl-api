@@ -66,6 +66,29 @@ def get_referees_by_assignments(payload):
         })
     return referees
 
+def get_game_venue_data(item, referees, game_data):
+    sub_venue = item['subvenue'] if 'subvenue' in item else 'Missing Field Name'
+    if sub_venue in game_data:
+        game_data[sub_venue][item['localized_time']] = {
+            'officials': referees,
+            'home_team': item["home_team"],
+            'away_team': item["away_team"],
+            'age_group': item["age_group"],
+            'gender': item["gender"]
+        }
+    else:
+        game_data[sub_venue] = {
+            item['localized_time']: {
+                'officials': referees,
+                'home_team': item["home_team"],
+                'away_team': item["away_team"],
+                'age_group': item["age_group"],
+                'gender': item["gender"]
+            }
+        }
+    
+    return game_data
+
 
 class Assignr:
     def __init__(self, client_id, client_secret, client_scope,
@@ -161,7 +184,7 @@ class Assignr:
             'Field A': {
                 '11:00 AM': {
                     'officials': [
-                        {'accepted': True, 'position': 'Referee', 'first_name': 'Connor', 'last_name': 'Smith'}
+                        {'accepted': True, 'position': 'Referee', 'first_name': 'Marge', 'last_name': 'Simpson'}
                     ],
                     'home_team': 'Hanover-1', 'away_team': 'Hanover-1', 'age_group': 'Grade 1/2', 'gender': 'Boys'
                     }
@@ -169,33 +192,33 @@ class Assignr:
             'Field Five': {
                 '8:00 AM': {
                     'officials': [
-                        {'accepted': True, 'position': 'Referee', 'first_name': 'Gregory', 'last_name': 'Smith'}
+                        {'accepted': True, 'position': 'Referee', 'first_name': 'Homer', 'last_name': 'Simpson'}
                     ],
                     'home_team': 'Hanover-3', 'away_team': 'Hanover-3', 'age_group': 'Grade 3/4', 'gender': 'Girls'
                     },
                 '9:30 AM': {
                     'officials': [
-                        {'accepted': True, 'position': 'Referee', 'first_name': 'Gregory', 'last_name': 'Smith'}
+                        {'accepted': True, 'position': 'Referee', 'first_name': 'Homer', 'last_name': 'Simpson'}
                     ],
                     'home_team': 'Hanover-3', 'away_team': 'Hanover-3', 'age_group': 'Grade 3/4', 'gender': 'Boys'
                     },
                 '11:00 AM': {
                     'officials': [
-                        {'accepted': True, 'position': 'Referee', 'first_name': 'Liam', 'last_name': 'Smith'}
+                        {'accepted': True, 'position': 'Referee', 'first_name': 'Lisa', 'last_name': 'Simpson'}
                     ],
                     'home_team': 'Hanover-4', 'away_team': 'Hanover-4', 'age_group': 'Grade 3/4', 'gender': 'Boys'
                     },
                 '12:30 PM': {
                     'officials': [
-                        {'accepted': True, 'position': 'Referee', 'first_name': 'Liam', 'last_name': 'Smith'},
-                        {'accepted': True, 'position': 'Asst. Referee', 'first_name': 'Nick', 'last_name': 'Smith'},
-                        {'accepted': True, 'position': 'Asst. Referee', 'first_name': 'Connor', 'last_name': 'Smith'}
+                        {'accepted': True, 'position': 'Referee', 'first_name': 'Lisa', 'last_name': 'Simpson'},
+                        {'accepted': True, 'position': 'Asst. Referee', 'first_name': 'Homer', 'last_name': 'Simpson'},
+                        {'accepted': True, 'position': 'Asst. Referee', 'first_name': 'Marge', 'last_name': 'Simpson'}
                     ],
                     'home_team': 'Hanover-4', 'away_team': 'Hanover-4', 'age_group': 'Grade 3/4', 'gender': 'Girls'
                     }
                 }
             }
-    
+  
     def get_games_venue(self, start_dt, end_dt, venue):
         more_rows = True
         results = {}
@@ -224,25 +247,7 @@ class Assignr:
                     sub_items = item['_embedded']
                     if sub_items['venue']['name'] == venue:
                         referees = get_referees_by_assignments(sub_items['assignments'])
-                        sub_venue = item['subvenue'] if 'subvenue' in item else None
-                        if sub_venue in results:
-                            results[sub_venue][item['localized_time']] = {
-                                'officials': referees,
-                                'home_team': item["home_team"],
-                                'away_team': item["away_team"],
-                                'age_group': item["age_group"],
-                                'gender': item["gender"]
-                            }
-                        else:
-                            results[sub_venue] = {
-                                item['localized_time']: {
-                                    'officials': referees,
-                                    'home_team': item["home_team"],
-                                    'away_team': item["away_team"],
-                                    'age_group': item["age_group"],
-                                    'gender': item["gender"]
-                                }
-                            }
+                        results = get_game_venue_data(item, referees, results)
             except KeyError as ke:
                 logging.error(f"Key: {ke}, missing from Game response")
 

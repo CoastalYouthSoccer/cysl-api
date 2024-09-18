@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     assignr_client_scope: str
     assignr_base_url: str
     assignr_auth_url: str
+    http_origins: str
     model_config = SettingsConfigDict(env_file=environ.get("ENV_FILE", ".env"),
                                       extra="ignore")
 
