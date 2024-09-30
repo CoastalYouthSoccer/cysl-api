@@ -10,6 +10,14 @@ from typing import Dict
 from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import Session
 
+from opentelemetry import trace
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import ConsoleSpanExporter
+from opentelemetry.sdk.resources import SERVICE_NAME, Resource
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
+from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+
 from app.crud import (get_seasons, create_season, deactivate_season,
                       create_misconduct, get_misconducts, get_associations,
                       deactivate_association, create_association)
@@ -29,6 +37,26 @@ logger = logging.getLogger(__name__)
 
 from app.database import get_session
 
+resource = Resource(attributes={
+    SERVICE_NAME: config.otel_service_name
+})
+
+tracer_provider = TracerProvider(resource=resource)
+    
+otlp_exporter = OTLPSpanExporter(
+    endpoint=config.otel_exporter_oltp_endpoint
+)
+    
+span_processor = BatchSpanProcessor(otlp_exporter)
+tracer_provider.add_span_processor(span_processor)
+
+trace.set_tracer_provider(tracer_provider)
+trace.set_tracer_provider(TracerProvider())
+tracer = trace.get_tracer(__name__)
+trace.get_tracer_provider().add_span_processor(
+    BatchSpanProcessor(ConsoleSpanExporter())
+)
+
 token_auth_scheme = HTTPBearer()
 auth = VerifyToken(config.auth0_domain, config.auth0_algorithms,
                    config.auth0_api_audience, config.auth0_issuer)
@@ -38,6 +66,7 @@ assignr = Assignr(config.assignr_client_id, config.assignr_client_secret,
 
 app = FastAPI()
 
+FastAPIInstrumentor().instrument_app(app)
 
 origins = config.http_origins.split()
 

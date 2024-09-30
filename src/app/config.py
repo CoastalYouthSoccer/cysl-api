@@ -15,6 +15,8 @@ class Settings(BaseSettings):
     assignr_base_url: str
     assignr_auth_url: str
     http_origins: str
+    otel_service_name: str = "cysl-backend"
+    otel_exporter_oltp_endpoint: str
     model_config = SettingsConfigDict(env_file=environ.get("ENV_FILE", ".env"),
                                       extra="ignore")
 
