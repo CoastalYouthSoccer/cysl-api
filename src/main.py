@@ -42,9 +42,13 @@ resource = Resource(attributes={
 })
 
 tracer_provider = TracerProvider(resource=resource)
-    
+
+print(f"Bearer {config.otel_grafana_token}")
 otlp_exporter = OTLPSpanExporter(
-    endpoint=config.otel_exporter_oltp_endpoint
+    endpoint=config.otel_exporter_oltp_endpoint,
+    headers={
+        "Authorization": f"Bearer {config.otel_grafana_token}"
+    }
 )
     
 span_processor = BatchSpanProcessor(otlp_exporter)
@@ -65,8 +69,6 @@ assignr = Assignr(config.assignr_client_id, config.assignr_client_secret,
                   config.assignr_auth_url)
 
 app = FastAPI()
-
-FastAPIInstrumentor().instrument_app(app)
 
 origins = config.http_origins.split()
 
@@ -148,3 +150,5 @@ async def new_misconduct(item: MisconductCreate, db: Session=Depends(get_session
 async def read_misconducts(db: Session=Depends(get_session),
                     skip: int=0, limit: int=100):
     return await get_misconducts(db, skip=skip, limit=limit)
+
+FastAPIInstrumentor().instrument_app(app)

@@ -17,6 +17,7 @@ class Settings(BaseSettings):
     http_origins: str
     otel_service_name: str = "cysl-backend"
     otel_exporter_oltp_endpoint: str
+    otel_grafana_token: str
     model_config = SettingsConfigDict(env_file=environ.get("ENV_FILE", ".env"),
                                       extra="ignore")
 
