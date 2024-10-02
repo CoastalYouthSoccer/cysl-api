@@ -1,5 +1,6 @@
 from sys import stdout
 import logging
+import base64
 
 from fastapi import FastAPI, Depends, Security, HTTPException
 from fastapi.security import HTTPBearer, SecurityScopes
@@ -12,11 +13,10 @@ from sqlalchemy.orm import Session
 
 from opentelemetry import trace
 from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry.sdk.trace.export import ConsoleSpanExporter
 from opentelemetry.sdk.resources import SERVICE_NAME, Resource
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
-from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
 
 from app.crud import (get_seasons, create_season, deactivate_season,
                       create_misconduct, get_misconducts, get_associations,
@@ -43,22 +43,27 @@ resource = Resource(attributes={
 
 tracer_provider = TracerProvider(resource=resource)
 
-print(f"Bearer {config.otel_grafana_token}")
-otlp_exporter = OTLPSpanExporter(
-    endpoint=config.otel_exporter_oltp_endpoint,
-    headers={
-        "Authorization": f"Bearer {config.otel_grafana_token}"
-    }
-)
+if config.otel_insecure:
+    otlp_exporter = OTLPSpanExporter(
+        endpoint=config.otel_exporter_oltp_endpoint,
+        insecure="true"
+    )
+else:    
+    auth = base64.b64encode(bytes(f'{config.otel_instance_id}:{config.otel_grafana_token}', 'utf-8')) # bytes
+    otlp_exporter = OTLPSpanExporter(
+        endpoint=config.otel_exporter_oltp_endpoint,
+        headers={
+            "Authorization": f"Bearer {auth}"
+        }
+    )
     
 span_processor = BatchSpanProcessor(otlp_exporter)
 tracer_provider.add_span_processor(span_processor)
 
 trace.set_tracer_provider(tracer_provider)
-trace.set_tracer_provider(TracerProvider())
 tracer = trace.get_tracer(__name__)
 trace.get_tracer_provider().add_span_processor(
-    BatchSpanProcessor(ConsoleSpanExporter())
+    BatchSpanProcessor(span_exporter=otlp_exporter)
 )
 
 token_auth_scheme = HTTPBearer()
