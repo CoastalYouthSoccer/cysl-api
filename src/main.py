@@ -40,13 +40,6 @@ class SpanFormatter(logging.Formatter):
             record.trace_id = "{trace:32x}".format(trace=trace_id)
         return super().format(record)
 
-
-formatter = SpanFormatter('level=%(levelname)s msg=%(message)s TraceID=%(trace_id)s')
-logging.basicConfig(stream=stdout,
-                    level=config.log_level)
-logger = logging.getLogger(__name__)
-logging.Formatter(formatter)
-
 from app.database import get_session
 
 resource = Resource(attributes={
@@ -78,6 +71,12 @@ trace.get_tracer_provider().add_span_processor(
     BatchSpanProcessor(span_exporter=otlp_exporter)
 )
 
+formatter = SpanFormatter('level=%(levelname)s msg=%(message)s TraceID=%(trace_id)s')
+logging.basicConfig(stream=stdout,
+                    level=config.log_level)
+logger = logging.getLogger(__name__)
+logging.Formatter(formatter)
+
 token_auth_scheme = HTTPBearer()
 auth = VerifyToken(config.auth0_domain, config.auth0_algorithms,
                    config.auth0_api_audience, config.auth0_issuer)
@@ -86,6 +85,8 @@ assignr = Assignr(config.assignr_client_id, config.assignr_client_secret,
                   config.assignr_auth_url)
 
 app = FastAPI()
+
+FastAPIInstrumentor().instrument_app(app)
 
 origins = config.http_origins.split()
 
@@ -167,5 +168,3 @@ async def new_misconduct(item: MisconductCreate, db: Session=Depends(get_session
 async def read_misconducts(db: Session=Depends(get_session),
                     skip: int=0, limit: int=100):
     return await get_misconducts(db, skip=skip, limit=limit)
-
-FastAPIInstrumentor().instrument_app(app)
