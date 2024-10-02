@@ -16,7 +16,7 @@ from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.resources import SERVICE_NAME, Resource
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
-from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
+from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
 
 from app.crud import (get_seasons, create_season, deactivate_season,
                       create_misconduct, get_misconducts, get_associations,
@@ -31,9 +31,21 @@ from app.helpers.helpers import VerifyToken
 
 config = get_settings()
 
+class SpanFormatter(logging.Formatter):
+    def format(self, record):
+        trace_id = trace.get_current_span().get_span_context().trace_id
+        if trace_id == 0:
+            record.trace_id = None
+        else:   
+            record.trace_id = "{trace:32x}".format(trace=trace_id)
+        return super().format(record)
+
+
+formatter = SpanFormatter('level=%(levelname)s msg=%(message)s TraceID=%(trace_id)s')
 logging.basicConfig(stream=stdout,
                     level=config.log_level)
 logger = logging.getLogger(__name__)
+logging.Formatter(formatter)
 
 from app.database import get_session
 
