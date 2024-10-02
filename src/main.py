@@ -86,8 +86,6 @@ assignr = Assignr(config.assignr_client_id, config.assignr_client_secret,
 
 app = FastAPI()
 
-FastAPIInstrumentor().instrument_app(app)
-
 origins = config.http_origins.split()
 
 app.add_middleware(
@@ -168,3 +166,5 @@ async def new_misconduct(item: MisconductCreate, db: Session=Depends(get_session
 async def read_misconducts(db: Session=Depends(get_session),
                     skip: int=0, limit: int=100):
     return await get_misconducts(db, skip=skip, limit=limit)
+
+FastAPIInstrumentor().instrument_app(app)
