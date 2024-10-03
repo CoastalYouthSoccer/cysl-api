@@ -55,7 +55,7 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
     - name: Deploy to Server
-    #      if: github.ref == 'refs/heads/main'
+      if: github.ref == 'refs/heads/main'
       uses: easingthemes/ssh-deploy@main
       env:
         TARGET_DIR: ${{ vars.DEPLOY_TARGET }}/backend-files/${{ github.sha }} 
