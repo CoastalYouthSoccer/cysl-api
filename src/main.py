@@ -75,7 +75,9 @@ formatter = SpanFormatter('level=%(levelname)s msg=%(message)s TraceID=%(trace_i
 logging.basicConfig(stream=stdout,
                     level=config.log_level)
 logger = logging.getLogger(__name__)
-logging.Formatter(formatter)
+ch = logging.StreamHandler()
+ch.setFormatter(formatter)
+logger.addHandler(ch)
 
 token_auth_scheme = HTTPBearer()
 auth = VerifyToken(config.auth0_domain, config.auth0_algorithms,
