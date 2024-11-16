@@ -78,6 +78,9 @@ jobs:
 #  if: github.ref == 'refs/heads/main'
 
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
 
     steps:
     - uses: actions/checkout@v4.2.2
@@ -85,6 +88,6 @@ jobs:
     - name: Build and publish Docker image
       uses: VaultVulp/gp-docker-action@1.6.0
       with:
-        github-token: ${{ secrets.DOCKER_TOKEN }}
+        github-token: ${{ secrets.GITHUB_TOKEN }}
         image-name: cysl-api
-        additional-image-tags: ${{ github.sha }}
+        image-tag: ${{ github.sha }}
