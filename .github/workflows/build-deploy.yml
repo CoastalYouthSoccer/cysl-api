@@ -20,10 +20,10 @@ jobs:
 
     strategy:
       matrix:
-        python-version: ['3.11']
+        python-version: ['3.12']
 
     steps:
-    - uses: actions/checkout@v4.1.4
+    - uses: actions/checkout@v4.2.2
       with:
         fetch-depth: 0
 
@@ -73,4 +73,18 @@ jobs:
         SCRIPT_AFTER: |
           ls -l
           sudo ./update_cysl_backend.sh ${{ github.sha }}
-        
+
+  docker_build_push:
+#  if: github.ref == 'refs/heads/main'
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4.2.2
+
+    - name: Pull, build and publish Docker image
+      uses: VaultVulp/gp-docker-action@1.6.0
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        image-name: cysl-api
+        additional-image-tags: ${{ github.sha }}
