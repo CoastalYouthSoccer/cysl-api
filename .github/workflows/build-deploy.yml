@@ -85,6 +85,6 @@ jobs:
     - name: Pull, build and publish Docker image
       uses: VaultVulp/gp-docker-action@1.6.0
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        github-token: ${{ secrets.DOCKER_TOKEN }}
         image-name: cysl-api
         additional-image-tags: ${{ github.sha }}
