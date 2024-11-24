@@ -3,9 +3,9 @@ name: Build and Deploy CYSL Backend
 on:
   push:
     paths:
-      - '**'
-      - '!README.md'
-      - '!VERSION'
+      - 'src'
+      - 'Dockerfile'
+      - '.dockerignore'
     branches:
       - '**'
       - '!releases/**'
