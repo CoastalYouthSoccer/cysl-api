@@ -2,7 +2,7 @@ name: Lint, Test, Package Helm Charts
 on:
     push:
       paths:
-        - 'helm-chart'
+        - 'helm-charts'
         - '.github/workflows/**'
       branches:
         - '**'
