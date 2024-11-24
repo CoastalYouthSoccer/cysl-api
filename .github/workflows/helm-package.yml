@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
         run:
-          working-directory: helm-chart
+          working-directory: helm-charts
     steps:
       - name: Checkout
         uses: actions/checkout@v4.2.0
@@ -57,7 +57,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: helm-chart
+        working-directory: helm-charts
     steps:
       - name: Checkout
         uses: actions/checkout@v4.2.2
@@ -74,5 +74,7 @@ jobs:
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.6.0
+        with:
+          charts_dir: helm-charts
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
