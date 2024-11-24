@@ -3,6 +3,7 @@ on:
     push:
       paths:
         - 'helm-chart'
+        - '.github/workflows/**'
       branches:
         - '**'
         - '!releases/**'
