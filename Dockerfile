@@ -13,7 +13,7 @@ USER app-user
 
 COPY ./src .
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --upgrade -r requirements.txt
 
 ENV OTEL_METRIC_EXPORT_INTERVAL="5000"
 ENV OTEL_RESOURCE_ATTRIBUTES=""
