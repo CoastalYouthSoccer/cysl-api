@@ -23,4 +23,4 @@ RUN useradd -u 1000 app-user
 USER app-user
 
 ENTRYPOINT ["opentelemetry-instrument", "uvicorn" , "main:app", "--host", "0.0.0.0", \
-            "--port", "9000", "--env-file", "/opt/cysl/backend/.env", "--reload"]
+            "--port", "8000", "--env-file", "/opt/cysl/backend/.env", "--reload"]
