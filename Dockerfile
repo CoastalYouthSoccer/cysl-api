@@ -19,7 +19,7 @@ ENV OTEL_RESOURCE_ATTRIBUTES=""
 ENV OTEL_PYTHON_LOGGING_AUTO_INSTRUMENTATION_ENABLED=false
 ENV OTEL_LOGS_EXPORTER=otlp
 
-RUN useradd -u 5000 app-user
+RUN useradd -u 1000 app-user
 USER app-user
 
 ENTRYPOINT ["opentelemetry-instrument", "uvicorn" , "main:app", "--host", "0.0.0.0", \
