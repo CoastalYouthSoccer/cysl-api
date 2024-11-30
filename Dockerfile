@@ -8,9 +8,10 @@ WORKDIR /
 
 FROM container-image
 
-COPY ./src .
-
+COPY ./src/requirements.txt .
 RUN pip install --no-cache-dir --upgrade -r requirements.txt
+
+COPY ./src .
 
 ENV OTEL_METRIC_EXPORT_INTERVAL="5000"
 ENV OTEL_RESOURCE_ATTRIBUTES=""
@@ -21,5 +22,5 @@ ENV OTEL_LOGS_EXPORTER=otlp
 RUN useradd -u 5000 app-user
 USER app-user
 
-ENTRYPOINT ["opentelemetry-instrument", "uvicorn" , "main:app", "--port", "9000", \
-            "--env-file", "/opt/cysl/backend/.env", "--reload"]
+ENTRYPOINT ["opentelemetry-instrument", "uvicorn" , "main:app", "--host", "0.0.0.0", \
+            "--port", "9000", "--env-file", "/opt/cysl/backend/.env", "--reload"]
