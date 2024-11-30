@@ -18,5 +18,5 @@ ENV OTEL_RESOURCE_ATTRIBUTES=""
 ENV OTEL_PYTHON_LOGGING_AUTO_INSTRUMENTATION_ENABLED=false
 ENV OTEL_LOGS_EXPORTER=otlp
 
-ENTRYPOINT ["opentelemetry-instrument", "uvicorn" , "main:app", "--host", "127.0.0.1", \
-            "--port", "9000", "--env-file", "/opt/cysl/backend/.env", "--reload"]
+ENTRYPOINT ["opentelemetry-instrument", "uvicorn" , "main:app", "--port", "9000", \
+            "--env-file", "/opt/cysl/backend/.env", "--reload"]
