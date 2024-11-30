@@ -8,9 +8,12 @@ WORKDIR /
 
 FROM container-image
 
+RUN useradd -u 5000 app-user
+USER app-user
+
 COPY ./src .
 
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
 ENV OTEL_METRIC_EXPORT_INTERVAL="5000"
 ENV OTEL_RESOURCE_ATTRIBUTES=""
