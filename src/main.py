@@ -4,7 +4,7 @@ import base64
 
 from fastapi import FastAPI, Depends, Security, HTTPException
 from fastapi.security import HTTPBearer, SecurityScopes
-from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.cors import CORSMiddleware
 from pydantic import UUID4
 from typing import Dict
 
@@ -76,8 +76,6 @@ logging.basicConfig(stream=stdout,
                     level=config.log_level)
 logger = logging.getLogger(__name__)
 ch = logging.StreamHandler()
-ch.setFormatter(formatter)
-logger.addHandler(ch)
 
 token_auth_scheme = HTTPBearer()
 auth = VerifyToken(config.auth0_domain, config.auth0_algorithms,
@@ -92,7 +90,7 @@ origins = config.http_origins.split()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -169,4 +167,4 @@ async def read_misconducts(db: Session=Depends(get_session),
                     skip: int=0, limit: int=100):
     return await get_misconducts(db, skip=skip, limit=limit)
 
-FastAPIInstrumentor().instrument_app(app)
+#FastAPIInstrumentor().instrument_app(app)
