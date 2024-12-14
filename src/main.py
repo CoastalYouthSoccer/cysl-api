@@ -167,4 +167,4 @@ async def read_misconducts(db: Session=Depends(get_session),
                     skip: int=0, limit: int=100):
     return await get_misconducts(db, skip=skip, limit=limit)
 
-#FastAPIInstrumentor().instrument_app(app)
+FastAPIInstrumentor().instrument_app(app)
