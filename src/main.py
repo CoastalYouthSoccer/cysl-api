@@ -4,7 +4,7 @@ import base64
 
 from fastapi import FastAPI, Depends, Security, HTTPException
 from fastapi.security import HTTPBearer, SecurityScopes
-from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.cors import CORSMiddleware
 from pydantic import UUID4
 from typing import Dict
 
@@ -75,7 +75,7 @@ formatter = SpanFormatter('level=%(levelname)s msg=%(message)s TraceID=%(trace_i
 logging.basicConfig(stream=stdout,
                     level=config.log_level)
 logger = logging.getLogger(__name__)
-logging.Formatter(formatter)
+ch = logging.StreamHandler()
 
 token_auth_scheme = HTTPBearer()
 auth = VerifyToken(config.auth0_domain, config.auth0_algorithms,
@@ -90,7 +90,7 @@ origins = config.http_origins.split()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

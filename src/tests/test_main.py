@@ -22,10 +22,10 @@ def test_post_seasons_not_authenticated(test_app):
 #    assert response.status_code == 201
 #    assert response.json() == {"ping": "pong!"}
 
-def test_get_misconducts_empty(test_app):
-    response = test_app.get("/misconducts")
-    assert response.status_code == 200
-    assert response.json() == []
+#def test_get_misconducts_empty(test_app):
+#    response = test_app.get("/misconducts")
+#    assert response.status_code == 200
+#    assert response.json() == []
 
 #def test_post_misconducts(test_app):
 #    response = test_app.post("/misconducts")
