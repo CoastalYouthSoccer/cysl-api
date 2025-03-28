@@ -14,7 +14,7 @@ class GameStatus(Enum):
     FORFEIT = 5
 
 
-class GameSchedule(Base):
+class Game(Base):
     season_id: UUID4
     division_id: UUID4
     age_group_id: UUID4
@@ -29,7 +29,7 @@ class GameSchedule(Base):
         from_attributes = True
 
 
-class GameScheduleCreate(BaseCreate):
+class GameCreate(BaseCreate):
     season_id: UUID4
     division_id: UUID4
     age_group_id: UUID4

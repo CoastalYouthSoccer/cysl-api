@@ -6,7 +6,7 @@ from typing import Optional
 from sqlmodel import SQLModel, Field
 
 
-class GameScheduleBase(SQLModel):
+class GameBase(SQLModel):
     season_id: uuid.UUID = Field(default=None, foreign_key="season.id")
     division_id: uuid.UUID = Field(default=None, foreign_key="division.id")
     age_group_id: uuid.UUID = Field(default=None, foreign_key="age_group.id")
@@ -18,11 +18,11 @@ class GameScheduleBase(SQLModel):
     away_score: Optional[int] = None
 
 
-class GameSchedule(GameScheduleBase, table=True):
-    __tablename__: str = 'game_schedule'
+class Game(GameBase, table=True):
+    __tablename__: str = 'game'
     id: uuid.UUID = Field(default_factory=int,
                             primary_key=True)
 
 
-class GameScheduleCreate(GameScheduleBase):
+class GameCreate(GameBase):
     pass

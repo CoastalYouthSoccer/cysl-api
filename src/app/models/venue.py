@@ -1,6 +1,7 @@
 import uuid
 
 from sqlmodel import SQLModel, Field
+from .address import Address  #noqa
 
 
 class VenueBase(SQLModel):
