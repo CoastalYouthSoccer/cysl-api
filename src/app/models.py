@@ -5,20 +5,37 @@ from typing import Optional
 
 from sqlmodel import SQLModel, Field
 
-class SeasonBase(SQLModel):
-    name: str
-    start_dt: date
-    end_dt: date
-    active: bool
+
+class AddressBase(SQLModel):
+    address1: str
+    address2: Optional[str]
+    city: str
+    state: str
+    zip_code: str
 
 
-class Season(SeasonBase, table=True):
-    __tablename__: str = 'season'
+class Address(AddressBase, table=True):
+    __tablename__: str = 'address'
     id: uuid.UUID = Field(default_factory=uuid.uuid4,
                             primary_key=True)
 
 
-class SeasonCreate(SeasonBase):
+class AddressCreate(AddressBase):
+    pass
+
+
+class AssociationBase(SQLModel):
+    name: str
+    active: bool
+
+
+class Association(AssociationBase, table=True):
+    __tablename__: str = 'association'
+    id: uuid.UUID = Field(default_factory=uuid.uuid4,
+                            primary_key=True)
+
+
+class AssociationCreate(AssociationBase):
     pass
 
 
@@ -55,16 +72,51 @@ class MisconductCreate(MisconductBase):
     pass
 
 
-class AssociationBase(SQLModel):
+class SeasonBase(SQLModel):
     name: str
+    start_dt: date
+    end_dt: date
     active: bool
 
 
-class Association(AssociationBase, table=True):
-    __tablename__: str = 'association'
+class Season(SeasonBase, table=True):
+    __tablename__: str = 'season'
     id: uuid.UUID = Field(default_factory=uuid.uuid4,
                             primary_key=True)
 
 
-class AssociationCreate(AssociationBase):
+class SeasonCreate(SeasonBase):
+    pass
+
+
+class SubVenueBase(SQLModel):
+    name: str
+    venue_id: int = Field(default=None, foreign_key="venue.id")
+    active: bool
+
+
+class SubVenue(SubVenueBase, table=True):
+    __tablename__: str = 'sub_venue'
+    id: uuid.UUID = Field(default_factory=uuid.uuid4,
+                            primary_key=True)
+
+
+class SubVenueCreate(SeasonBase):
+    pass
+
+
+class VenueBase(SQLModel):
+    name: str
+    active: bool
+    address_id: int = Field(default=None, foreign_key="address.id")
+    association_id: int = Field(default=None, foreign_key="association.id")
+
+
+class Venue(VenueBase, table=True):
+    __tablename__: str = 'venue'
+    id: int = Field(default_factory=int,
+                            primary_key=True)
+
+
+class VenueCreate(SeasonBase):
     pass
