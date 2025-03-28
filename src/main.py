@@ -2,7 +2,7 @@ from sys import stdout
 import logging
 import base64
 
-from fastapi import FastAPI, Depends, Security, HTTPException
+from fastapi import FastAPI, Security, HTTPException
 from fastapi.security import HTTPBearer, SecurityScopes
 from starlette.middleware.cors import CORSMiddleware
 from typing import Dict
@@ -30,8 +30,6 @@ class SpanFormatter(logging.Formatter):
         else:   
             record.trace_id = "{trace:32x}".format(trace=trace_id)
         return super().format(record)
-
-from app.database import get_session
 
 resource = Resource(attributes={
     SERVICE_NAME: config.otel_service_name
