@@ -5,7 +5,8 @@ from pydantic import UUID4
 from app.database import get_session
 from app.dependencies import auth
 
-from app.crud import (get_seasons, create_season, deactivate_season)
+from app.crud import (get_seasons, create_season, deactivate_season,
+                      get_season_by_name)
 from app.schemas import (Season, SeasonCreate)
 
 
@@ -30,3 +31,7 @@ async def delete_season(id: UUID4, db: Session=Depends(get_session),
         raise HTTPException(status_code=400,
                             detail=f"Failed to Delete, {id}!")
     return {"id": id}
+
+@router.get("/seasons/{name}", response_model=Season)
+async def get_season_by_name(name: str, db: AsyncSession=Depends(get_session)):
+    return await get_season_by_name(db, name=name)

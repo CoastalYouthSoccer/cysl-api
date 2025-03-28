@@ -16,7 +16,7 @@ from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExport
 
 from app.schemas import (Venue, VenueGame, GameTimes)
 from app.assignr.assignr import Assignr
-from app.routers import (age_group, association, misconduct, season)
+from app.routers import (age_group, association, misconduct, season, game)
 from app.config import get_settings
 from app.dependencies import auth
 
@@ -94,13 +94,7 @@ def read_venues():
     return assignr.get_venues()
 
 # game endpoints
-@app.get("/games", response_model=Dict[str, Dict[str, VenueGame]])
-def read_games(start_dt: str, end_dt: str, venue: str | None = None,
-    _: str = Security(auth.verify,
-                                 scopes=['read:games']
-    )):
-    return assignr.get_games_venue(start_dt=start_dt, end_dt=end_dt,
-                                   venue=venue)
+app.include_router(game.router)
 
 # association endpoints
 app.include_router(association.router)
