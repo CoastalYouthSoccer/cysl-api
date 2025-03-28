@@ -23,6 +23,15 @@ class BaseCreate(BaseModel):
     pass
 
 
+class AgeGroup(BaseModel):
+    id: UUID4
+    name: Annotated[str, StringConstraints(max_length=100)]
+    game_length: int
+
+    class Config:
+        from_attributes = True
+
+
 class Venue(BaseModel):
     id: int
     name: str
@@ -33,7 +42,8 @@ class Season(BaseModel):
     id: UUID4
     name: Annotated[str, StringConstraints(max_length=100)]
     start_dt: date
-    end_dt: date
+    season_length: int
+    holiday_dates: Optional[str]
     active: bool
 
     class Config:

@@ -3,3 +3,4 @@ from .season import (get_season_by_name, get_seasons,
 from .misconduct import (create_misconduct, get_misconducts) #noqa
 from .association import (create_association, get_associations,
                           deactivate_association, get_association_by_name) #noqa
+from .age_group import get_age_groups #noqa

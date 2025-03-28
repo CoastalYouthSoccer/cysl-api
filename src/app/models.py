@@ -1,4 +1,4 @@
-from datetime import datetime, date
+from datetime import datetime, date, time
 import uuid
 
 from typing import Optional
@@ -26,7 +26,7 @@ class AddressCreate(AddressBase):
 
 class AssociationBase(SQLModel):
     name: str
-    active: bool
+    active: Optional[bool] = True
 
 
 class Association(AssociationBase, table=True):
@@ -37,6 +37,30 @@ class Association(AssociationBase, table=True):
 
 class AssociationCreate(AssociationBase):
     pass
+
+
+class AgeGroupBase(SQLModel):
+    name: str
+    game_length:int
+
+
+class AgeGroup(AgeGroupBase, table=True):
+    __tablename__: str = 'age_group'
+    id: uuid.UUID = Field(default_factory=uuid.uuid4,
+                            primary_key=True)
+
+
+class AgeGroupCreate(AgeGroupBase):
+    pass
+
+
+class AssociationGameInformation(SQLModel, table=True):
+    association_id: uuid.UUID = Field(default=None, foreign_key="association.id",
+                                      primary_key=True)
+    age_group_id: uuid.UUID = Field(default=None, foreign_key="age_group.id",
+                                      primary_key=True)
+    start_time: time
+    slot_length: int  # Length of the time to slot between games
 
 
 class MisconductBase(SQLModel):
@@ -63,10 +87,12 @@ class MisconductBase(SQLModel):
     offense: str
     description: str
 
+
 class Misconduct(MisconductBase, table=True):
     __tablename__: str = 'misconduct'
     id: uuid.UUID = Field(default_factory=uuid.uuid4,
                             primary_key=True)
+
 
 class MisconductCreate(MisconductBase):
     pass
@@ -75,8 +101,9 @@ class MisconductCreate(MisconductBase):
 class SeasonBase(SQLModel):
     name: str
     start_dt: date
-    end_dt: date
-    active: bool
+    season_length: int  # Length of the season in weeks
+    holiday_dates: Optional[str] = None
+    active: Optional[bool] = True
 
 
 class Season(SeasonBase, table=True):
@@ -91,7 +118,7 @@ class SeasonCreate(SeasonBase):
 
 class SubVenueBase(SQLModel):
     name: str
-    venue_id: int = Field(default=None, foreign_key="venue.id")
+    venue_id: uuid.UUID = Field(default=None, foreign_key="venue.id")
     active: bool
 
 
@@ -108,13 +135,13 @@ class SubVenueCreate(SeasonBase):
 class VenueBase(SQLModel):
     name: str
     active: bool
-    address_id: int = Field(default=None, foreign_key="address.id")
-    association_id: int = Field(default=None, foreign_key="association.id")
+    address_id: uuid.UUID = Field(default=None, foreign_key="address.id")
+    association_id: uuid.UUID = Field(default=None, foreign_key="association.id")
 
 
 class Venue(VenueBase, table=True):
     __tablename__: str = 'venue'
-    id: int = Field(default_factory=int,
+    id: uuid.UUID = Field(default_factory=int,
                             primary_key=True)
 
 
