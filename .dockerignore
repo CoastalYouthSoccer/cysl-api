@@ -1,0 +1,42 @@
+# Created by .ignore support plugin (hsz.mobi)
+**/.idea/
+
+**/__pycache__/
+
+.DS_Store
+.env
+.flaskenv
+*.pyc
+*.pyo
+env/
+env*
+dist/
+build/
+*.egg
+*.egg-info/
+_mailinglist
+.tox/
+.cache/
+docs/_build/
+
+# Tests
+tests/
+sonar-project.properties
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+*,cover
+test-results/
+test-reports/
+
+# VsCode
+.vscode/
+~/virtualenvs
+
+# Databases
+*.db
+
+# Allow env.py in migrations
+!**/migrations/env.py

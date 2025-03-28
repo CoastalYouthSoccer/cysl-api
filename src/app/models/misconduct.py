@@ -1,25 +1,9 @@
-from datetime import datetime, date
+from datetime import datetime
 import uuid
 
 from typing import Optional
 
 from sqlmodel import SQLModel, Field
-
-class SeasonBase(SQLModel):
-    name: str
-    start_dt: date
-    end_dt: date
-    active: bool
-
-
-class Season(SeasonBase, table=True):
-    __tablename__: str = 'season'
-    id: uuid.UUID = Field(default_factory=uuid.uuid4,
-                            primary_key=True)
-
-
-class SeasonCreate(SeasonBase):
-    pass
 
 
 class MisconductBase(SQLModel):
@@ -46,25 +30,12 @@ class MisconductBase(SQLModel):
     offense: str
     description: str
 
+
 class Misconduct(MisconductBase, table=True):
     __tablename__: str = 'misconduct'
     id: uuid.UUID = Field(default_factory=uuid.uuid4,
                             primary_key=True)
 
+
 class MisconductCreate(MisconductBase):
-    pass
-
-
-class AssociationBase(SQLModel):
-    name: str
-    active: bool
-
-
-class Association(AssociationBase, table=True):
-    __tablename__: str = 'association'
-    id: uuid.UUID = Field(default_factory=uuid.uuid4,
-                            primary_key=True)
-
-
-class AssociationCreate(AssociationBase):
     pass

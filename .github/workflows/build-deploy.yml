@@ -3,27 +3,26 @@ name: Build and Deploy CYSL Backend
 on:
   push:
     paths:
-      - '**'
-      - '!README.md'
-      - '!VERSION'
+      - 'src'
+      - 'Dockerfile'
+      - '.dockerignore'
     branches:
       - '**'
       - '!releases/**'
-
-defaults:
-  run:
-    working-directory: src
 
 jobs:    
   build_deploy:
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: src
     strategy:
       matrix:
-        python-version: ['3.11']
+        python-version: ['3.12']
 
     steps:
-    - uses: actions/checkout@v4.1.4
+    - uses: actions/checkout@v4.2.2
       with:
         fetch-depth: 0
 
@@ -48,11 +47,11 @@ jobs:
         coverage xml -o coverage.xml
         sed -i 's@'$GITHUB_WORKSPACE'@/github/workspace/@g' coverage.xml
 
-    - name: SonarCloud Scan
-      uses: SonarSource/sonarcloud-github-action@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+#    - name: SonarCloud Scan
+#      uses: SonarSource/sonarcloud-github-action@v3.1.0
+#      env:
+#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
     - name: Deploy to Server
       if: github.ref == 'refs/heads/main'
@@ -71,6 +70,39 @@ jobs:
           sudo mkdir -p ${{ env.TARGET_DIR }}
           sudo chmod 777 -R ${{ env.TARGET_DIR }}
         SCRIPT_AFTER: |
-          ls -l
           sudo ./update_cysl_backend.sh ${{ github.sha }}
-        
+
+  docker_build_push:
+#  if: github.ref == 'refs/heads/main'
+    needs: [build_deploy]
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    env:
+      IMAGE_NAME: cysl-api
+
+    steps:
+    - uses: actions/checkout@v4.2.2
+
+    - name: Build image
+      run: |
+        docker build . --tag ${{ env.IMAGE_NAME}} --label "runnumber=${GITHUB_RUN_ID}"
+
+    - name: Log in to registry
+      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+    - name: Push image
+      run: |
+        IMAGE_ID=ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}
+        IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+
+        VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+
+        [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+
+        [ "$VERSION" == "main" ] && VERSION=latest
+        echo IMAGE_ID=$IMAGE_ID
+        echo VERSION=$VERSION
+        docker tag ${{ env.IMAGE_NAME }} $IMAGE_ID:$VERSION
+        docker push $IMAGE_ID:$VERSION

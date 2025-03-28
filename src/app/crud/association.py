@@ -21,12 +21,13 @@ async def deactivate_association(session: AsyncSession, id: UUID4):
     try:
         temp = await session.get(AssociationModel, id)
         if temp:
-            msg = f"Association, {temp.name}, already exists!"
+            await session.execute(
+                update(AssociationModel), [{"id": id, "active": False}]
+                )
+        else:
+            msg = f"Association, {temp.name}, doesn't exists!"
             logger.info(msg)
             raise HTTPException(status_code=400, detail=msg)
-        await session.execute(
-            update(AssociationModel), [{"id": id, "active": False}]
-        )
     except Exception as e:
         logger.error(e)
         return True

@@ -29,16 +29,18 @@ async def check_misconduct_exists(session: AsyncSession, game_dt: datetime,
 async def deactivate_misconduct(session: AsyncSession, id: UUID4):
     temp = await session.get(Misconduct, id)
     if temp:
+        try:
+            await session.execute(
+                update(MisconductModel), [{"id": id, "active": False}]
+            )
+        except Exception as e:
+            logger.error(e)
+            msg = f"Unable to update Misconduct, {temp.name}"
+            raise HTTPException(status_code=400, detail=msg)
+    else:
         msg = f"Misconduct, {temp.name}, doesn't exists!"
         logger.info(msg)
         raise HTTPException(status_code=400, detail=msg)
-    try:
-        await session.execute(
-            update(MisconductModel), [{"id": id, "active": False}]
-        )
-    except Exception as e:
-        logger.error(e)
-        return True
     
     return False
 
