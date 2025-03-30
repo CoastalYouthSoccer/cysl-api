@@ -1,10 +1,17 @@
+from os import getenv
+import asyncio
 import pytest
 import jwt
 from datetime import datetime, timedelta
+from contextlib import asynccontextmanager
 
-#from asyncio import get_event_loop
+from sqlmodel import SQLModel, create_engine
+from sqlalchemy.ext.asyncio import AsyncSession, AsyncEngine
+from sqlalchemy.orm import sessionmaker
+from fastapi import FastAPI
 
-from starlette.testclient import TestClient
+from httpx import AsyncClient
+
 from os.path import (join, abspath, dirname)
 import json
 from sqlalchemy import insert, MetaData
@@ -17,6 +24,64 @@ seed_info = {
     "season": Season, "misconduct": Misconduct,
     "association": Association
 }
+
+engine = AsyncEngine(create_engine(getenv("DATABASE_URL"), echo=True, future=True))
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    print("starting up")
+    yield
+    print("shutting down")
+
+# drop all database every time when test complete
+@pytest.fixture(scope='session')
+async def async_db_engine():
+    async with async_engine.begin() as conn:
+        await conn.run_sync(SQLModel.metadata.create_all)
+
+    yield async_engine
+
+    async with async_engine.begin() as conn:
+        await conn.run_sync(SQLModel.metadata.drop_all)
+
+# truncate all table to isolate tests
+@pytest.fixture(scope='function')
+async def async_db(async_db_engine):
+    async_session = sessionmaker(
+        expire_on_commit=False,
+        autocommit=False,
+        autoflush=False,
+        bind=async_db_engine,
+        class_=AsyncSession,
+    )
+
+    async with async_session() as session:
+        await session.begin()
+
+        yield session
+
+        await session.rollback()
+
+        for table in reversed(SQLModel.metadata.sorted_tables):
+            await session.execute(f'TRUNCATE {table.name} CASCADE;')
+            await session.commit()
+
+@pytest.fixture(scope='session')
+async def async_client() -> AsyncClient:
+    async with lifespan(app):
+        async with AsyncClient as async_client:
+            yield async_client
+
+@pytest.fixture(scope='session')
+def event_loop():
+    policy = asyncio.get_event_loop_policy()
+    loop = policy.new_event_loop()
+    yield loop
+    loop.close()
+
+@pytest.fixture(scope="session")
+def anyio_backend():
+    return "asyncio"
 
 def mock_auth0_token(permissions=[]):
     secret_key = 'your-secret-key'
@@ -34,11 +99,6 @@ def mock_auth0_token(permissions=[]):
 
     token = jwt.encode(payload, secret_key, algorithm='HS256')
     return token
-
-@pytest.fixture(scope="module")
-def test_app():
-    client = TestClient(app)
-    yield client
 
 def load_database(db_session, file_name, data_model):
     with open(file_name) as f_in:

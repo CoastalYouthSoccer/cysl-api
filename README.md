@@ -31,10 +31,6 @@ from app.models import Season, Misconduct      # noqa
 
 Replace line `target_metadata = None` with `target_metadata = SQLModel.metadata` 
 
-Update `alembic.ini`
-
-Replace line `sqlalchemy.url = driver://user:pass@localhost/dbname` with
-`sqlalchemy.url = postgresql+asyncpg://user:pass@localhost/dbname`
 
 ### Generating Migrations
 
@@ -48,3 +44,42 @@ alembic revision --autogenerate
 alembic upgrade head
 ```
 
+## Environment Variables
+
+The system searches for environment variables in `.env` unless overridden by the environment variable, `ENV_FILE`.
+
+### Required Environment Variables
+
+`ASSIGNR_CLIENT_ID` - Assignr Client ID associated with your API environment.
+`ASSIGNR_CLIENT_SECRET` - Assignr Client ID associated with your API environment.
+`AUTH0_DOMAIN` - Domain name associated with the application.
+`AUTH0_API_AUDIENCE` - Auth0 API Audience associated with this application.
+`AUTH0_ISSUER` - Auth0 Issuer linked to this application.
+`DATABASE_URL` - database connection string. MySQL and Postgres are currently supported.
+   Postgres example: `postgresql+asyncpg://user:pass@localhost/dbname`
+   MySql example: `mysql+asyncmy://user:pass@localhost/dbname`
+
+### Optional Environment Variables
+
+`ASSIGNR_AUTH_URL`- Assignr authorization url endpoint, defaults to `https://app.assignr.com/oauth/token`
+`ASSIGNR_BASE_URL` - Base Assignr API endpoint, defaults to `https://api.assignr.com/api/v2/`
+`ASSIGNR_CLIENT_SCOPE` - Assignr requested access, defaults to "read write"
+`AUTH0_ALGORITHMS` - defaults to "RS256"
+`HTTP_ORIGINS` - defaults to "*". Really should be changed to proper domain.
+`LOG_LEVEL` - sets logging level. Needs to be integer value. Defaults to `30` (WARNING). Valid values:
+  `0`  - NOTSET
+  `10` - DEBUG
+  `20` - INFO
+  `30` - WARNING
+  `40` - ERROR
+  `50` - CRITICAL
+ 
+ ## Running Unit Test Suite
+
+ ### Creating the Test Database and User
+
+```
+CREATE DATABASE [IF NOT EXISTS] test_database;
+CREATE USER 'testuser'@'localhost' IDENTIFIED BY 'testpassword';
+GRANT ALL ON test_database.* TO 'testuser'@'localhost';
+```
