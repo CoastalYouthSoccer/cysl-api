@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import update, select, delete
 from pydantic import UUID4
 from app.models import Game as GameModel
-from app.schemas import GameCreate, Game  
+from app.schemas import Game  
 logger = logging.getLogger(__name__)
 
 async def get_game(session: AsyncSession, id: UUID4):
@@ -17,17 +17,18 @@ async def get_games(session: AsyncSession, skip: int=0, limit: int=100):
         limit(limit=limit).offset(offset=skip))
     return result.scalars().all()
 
-async def check_for_existing_game(session: AsyncSession, item: GameCreate):
+async def check_for_existing_game(session: AsyncSession, item: Game):
     return await session.execute(select(GameModel). \
                       where(GameModel.season_id == item.season_id,
                             GameModel.age_group_id == item.age_group_id,
+                            GameModel.gender_boy == item.gender_boy,
                             GameModel.away_team == item.away_team,
                             GameModel.division_id == item.division_id,
                             GameModel.game_dt == item.game_dt,
                             GameModel.home_team == item.home_team,
                             GameModel.sub_venue_id == item.sub_venue_id)).all()
 
-async def create_game(session: AsyncSession, item: GameCreate):
+async def create_game(session: AsyncSession, item: Game):
     temp = await check_for_existing_game(session, item=item)
     if temp:
         msg = f"Game, {temp.id}, already exists!"

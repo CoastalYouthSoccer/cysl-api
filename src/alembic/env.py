@@ -9,7 +9,7 @@ from sqlmodel import SQLModel
 from alembic import context
 
 from app.models import (Venue, Association, Season, Misconduct, SubVenue, Game,
-                        AgeGroup, TeamCount)
+                        AgeGroup)
 from app.config import get_settings
 
 # this is the Alembic Config object, which provides

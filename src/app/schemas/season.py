@@ -11,6 +11,9 @@ class Season(Base):
     season_length: int
     holiday_dates: Optional[str]
     active: bool
+    team_count_google_id: Optional[str]
+    team_count_google_range: Optional[str]
+
 
     class Config:
         from_attributes = True

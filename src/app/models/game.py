@@ -15,7 +15,7 @@ class GameBase(SQLModel):
                                    primary_key=True)
     age_group_id: uuid.UUID = Field(default=None, foreign_key="age_group.id",
                                     primary_key=True)
-    gender: int = Field(default=None, primary_key=True)
+    gender_boy: bool = Field(default=None, primary_key=True)
     home_team: str
     away_team: str
     sub_venue_id: Optional[uuid.UUID] = Field(default=None, foreign_key="sub_venue.id")
