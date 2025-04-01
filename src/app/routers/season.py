@@ -3,12 +3,10 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import Session
 from pydantic import UUID4
 from app.database import get_session
-from app.dependencies import auth
-
 from app.crud import (get_seasons, create_season, deactivate_season,
                       get_season_by_name)
 from app.schemas import (Season, SeasonCreate)
-
+from app.dependencies import auth
 
 router = APIRouter()
 

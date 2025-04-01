@@ -1,6 +1,3 @@
-from os import environ
-from sys import exit
-
 import logging
 
 from sqlmodel import SQLModel, create_engine

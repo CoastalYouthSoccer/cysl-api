@@ -8,6 +8,10 @@ from app.models import Game as GameModel
 from app.schemas import GameCreate, Game  
 logger = logging.getLogger(__name__)
 
+async def get_game(session: AsyncSession, id: UUID4):
+    return await session.execute(select(GameModel). \
+                      where(GameModel.id == id)).all()
+
 async def get_games(session: AsyncSession, skip: int=0, limit: int=100):
     result = await session.execute(select(GameModel). \
         limit(limit=limit).offset(offset=skip))

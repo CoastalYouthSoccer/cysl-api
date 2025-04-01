@@ -14,7 +14,7 @@ from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
 
-from app.schemas import (Venue, VenueGame, GameTimes)
+from app.schemas import (Game, AgeGroup, Association, Venue, Season, Misconduct)
 from app.assignr.assignr import Assignr
 from app.routers import (age_group, association, misconduct, season, game)
 from app.config import get_settings

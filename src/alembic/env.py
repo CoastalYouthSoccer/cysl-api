@@ -9,7 +9,7 @@ from sqlmodel import SQLModel
 from alembic import context
 
 from app.models import Venue, Association, Season, Misconduct, SubVenue
-from app.config import get_settings
+from api.app.config import get_settings
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
