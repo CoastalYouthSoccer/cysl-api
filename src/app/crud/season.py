@@ -17,6 +17,9 @@ async def get_season_by_name(session: AsyncSession, name: str):
     return await session.execute(select(SeasonModel). \
                       where(SeasonModel.name == name)).all()
 
+async def get_season(session: AsyncSession, name: str):
+    return await session.get(SeasonModel, id)
+
 async def deactivate_season(session: AsyncSession, id: UUID4):
     try:
         temp = await session.get(SeasonModel, id)

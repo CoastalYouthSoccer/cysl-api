@@ -18,6 +18,7 @@ class Game(Base):
     season_id: UUID4
     division_id: UUID4
     age_group_id: UUID4
+    gender: int
     home_team: str
     away_team: str
     sub_venue_id: Optional[UUID4] = None

@@ -7,3 +7,4 @@ from .division import (Division, DivisionCreate) #noqa
 from .game import (Game, GameCreate) #noqa
 from .venue import (Venue, VenueCreate) #noqa
 from .sub_venue import (SubVenue, SubVenueCreate) #noqa
+from .team_count import (TeamCount, TeamCountCreate) #noqa

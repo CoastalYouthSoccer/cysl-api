@@ -1,14 +1,9 @@
-from datetime import datetime
 import uuid
 
-from typing import Optional
-
 from sqlmodel import SQLModel, Field
-
 from app.models.common import GenderEnum
 
-
-class GameBase(SQLModel):
+class TeamCountBase(SQLModel):
     season_id: uuid.UUID = Field(default=None, foreign_key="season.id",
                                  primary_key=True)
     division_id: uuid.UUID = Field(default=None, foreign_key="division.id",
@@ -16,17 +11,14 @@ class GameBase(SQLModel):
     age_group_id: uuid.UUID = Field(default=None, foreign_key="age_group.id",
                                     primary_key=True)
     gender: int = Field(default=None, primary_key=True)
-    home_team: str
-    away_team: str
-    sub_venue_id: Optional[uuid.UUID] = Field(default=None, foreign_key="sub_venue.id")
-    game_dt: Optional[datetime] = None
-    home_score: Optional[int] = None
-    away_score: Optional[int] = None
+    association_id: uuid.UUID = Field(default=None, foreign_key="association.id",
+                                      primary_key=True)
+    team_cnt: int = 0
 
 
-class Game(GameBase, table=True):
-    __tablename__: str = 'game'
+class TeamCount(TeamCountBase, table=True):
+    __tablename__: str = 'team_count'
 
 
-class GameCreate(GameBase):
+class TeamCountCreate(TeamCountBase):
     pass

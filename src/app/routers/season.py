@@ -33,3 +33,7 @@ async def delete_season(id: UUID4, db: Session=Depends(get_session),
 @router.get("/seasons/{name}", response_model=Season)
 async def get_season_by_name(name: str, db: AsyncSession=Depends(get_session)):
     return await get_season_by_name(db, name=name)
+
+@router.get("/seasons/{id}", response_model=Season)
+async def get_season_by_name(id: UUID4, db: AsyncSession=Depends(get_session)):
+    return await get_season(db, id=id)
