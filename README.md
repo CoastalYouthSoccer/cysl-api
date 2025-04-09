@@ -6,18 +6,18 @@
 
 ### Alembic Init
 
-So I remember how to setup async database and `migrations` directory
+So I remember how to setup async database and `alembic` directory
 
-`alembic init -t async migrations`
+`alembic init -t async alembic`
 
-Update `migrations/script.py.mako` section
+Update `alembic/script.py.mako` section
 ```
 from alembic import op
 import sqlalchemy as sa
 import sqlmodel         #NEW
 ```
 
-Update `migrations/env.py`:
+Update `alembic/env.py`:
 ```
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
@@ -35,7 +35,7 @@ Replace line `target_metadata = None` with `target_metadata = SQLModel.metadata`
 ### Generating Migrations
 
 ```
-alembic revision --autogenerate
+alembic revision --autogenerate -m "comment"
 ```
 
 ### Applying Migrations

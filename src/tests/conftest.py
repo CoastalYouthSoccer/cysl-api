@@ -47,7 +47,7 @@ async def async_db_engine():
 # truncate all table to isolate tests
 @pytest.fixture(scope='function')
 async def async_db(async_db_engine):
-    async_session = sessionmaker(
+    session = sessionmaker(
         expire_on_commit=False,
         autocommit=False,
         autoflush=False,
@@ -55,7 +55,7 @@ async def async_db(async_db_engine):
         class_=AsyncSession,
     )
 
-    async with async_session() as session:
+    async with session() as session:
         await session.begin()
 
         yield session
