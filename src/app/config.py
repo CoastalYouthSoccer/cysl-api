@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     auth0_issuer: str
     auth0_algorithms: str = "RS256"
     database_url: str
+    celery_database_url: str
     log_level: int = 30
     assignr_client_id: str
     assignr_client_secret: str

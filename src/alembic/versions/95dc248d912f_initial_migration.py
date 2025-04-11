@@ -112,6 +112,7 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('game',
+    sa.Column('id', sa.Uuid(), nullable=False),
     sa.Column('season_id', sa.Uuid(), nullable=False),
     sa.Column('division_id', sa.Uuid(), nullable=False),
     sa.Column('age_group_id', sa.Uuid(), nullable=False),
@@ -126,7 +127,7 @@ def upgrade() -> None:
     sa.ForeignKeyConstraint(['division_id'], ['division.id'], ),
     sa.ForeignKeyConstraint(['season_id'], ['season.id'], ),
     sa.ForeignKeyConstraint(['sub_venue_id'], ['sub_venue.id'], ),
-    sa.PrimaryKeyConstraint('season_id', 'division_id', 'age_group_id', 'gender_boy')
+    sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###
 
