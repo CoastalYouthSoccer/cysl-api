@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from pydantic import UUID4
 from app.database import get_session
 from app.crud import (get_associations,deactivate_association,
-                      create_association)
+                      create_association, get_association)
 from app.schemas import (Association, AssociationCreate)
 from app.dependencies import auth
 
@@ -20,7 +20,7 @@ async def new_association(item: AssociationCreate, db: Session=Depends(get_sessi
                                  scopes=['write:association'])):
     return await create_association(db, item=item)
 
-@router.delete("/associations/{id}")
+@router.delete("/association/{id}")
 async def delete_association(id: UUID4, db: Session=Depends(get_session),
                   _: str = Security(auth.verify,
                                     scopes=['delete:association'])):
@@ -29,3 +29,7 @@ async def delete_association(id: UUID4, db: Session=Depends(get_session),
         raise HTTPException(status_code=400,
                             detail=f"Failed to Delete Association, {id}!")
     return {"id": id}
+
+@router.get("/association/{id}", response_model=Association)
+async def get_association_id(id: UUID4, db: Session=Depends(get_session)):
+    return await get_association(db, id)

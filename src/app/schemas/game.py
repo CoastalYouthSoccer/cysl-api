@@ -14,16 +14,11 @@ class GameStatus(Enum):
     FORFEIT = 5
 
 
-class Gender(Enum):
-    BOYS = 1
-    GIRLS = 0
-
-
 class Game(BaseModel):
     season_id: UUID4
     division_id: UUID4
     age_group_id: UUID4
-    gender: Gender
+    gender_boy: bool
     home_team: str
     away_team: str
     sub_venue_id: Optional[UUID4] = None

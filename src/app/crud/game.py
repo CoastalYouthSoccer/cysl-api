@@ -2,6 +2,7 @@ import logging
 
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.exc import ResourceClosedError
 from sqlalchemy import update, select, delete
 from pydantic import UUID4
 from app.models import Game as GameModel
@@ -9,8 +10,14 @@ from app.schemas import Game
 logger = logging.getLogger(__name__)
 
 async def get_game(session: AsyncSession, id: UUID4):
-    return await session.execute(select(GameModel). \
-                      where(GameModel.id == id)).all()
+    result = await session.execute(select(GameModel). \
+                    where(GameModel.id == id))
+    game = result.scalar_one_or_none()
+    if game is None:
+        msg = f"Unable to find Game, {id}"
+        raise HTTPException(status_code=404, detail=msg)
+
+    return game
 
 async def get_games(session: AsyncSession, skip: int=0, limit: int=100):
     result = await session.execute(select(GameModel). \

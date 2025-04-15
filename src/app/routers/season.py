@@ -17,13 +17,13 @@ async def read_seasons(db: AsyncSession=Depends(get_session), skip: int=0, limit
 @router.post("/seasons", response_model=SeasonCreate, status_code=201)
 async def new_season(item: SeasonCreate, db: Session=Depends(get_session),
                _: str = Security(auth.verify,
-                                 scopes=['write:season'])):
+                                 scopes=['write:seasons'])):
     return await create_season(db, item=item)
 
 @router.delete("/seasons/{id}")
 async def delete_season(id: UUID4, db: Session=Depends(get_session),
                   _: str = Security(auth.verify,
-                                    scopes=['delete:season'])):
+                                    scopes=['delete:seasons'])):
     error = await deactivate_season(db, id=id)
     if error:
         raise HTTPException(status_code=400,
@@ -36,4 +36,4 @@ async def get_season_by_name(name: str, db: AsyncSession=Depends(get_session)):
 
 @router.get("/seasons/{id}", response_model=Season)
 async def get_season_by_name(id: UUID4, db: AsyncSession=Depends(get_session)):
-    return await get_season(db, id=id)
+    return await get_seasons(db, id=id)

@@ -18,7 +18,6 @@ async def init_db():
         await conn.run_sync(SQLModel.metadata.drop_all)
         await conn.run_sync(SQLModel.metadata.create_all)
 
-@asynccontextmanager
 async def get_session() -> AsyncSession:
     session = sessionmaker(
         async_engine, class_=AsyncSession, expire_on_commit=False

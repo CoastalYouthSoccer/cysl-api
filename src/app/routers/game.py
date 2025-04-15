@@ -1,9 +1,11 @@
-from fastapi import APIRouter, Depends, Security, HTTPException
+from fastapi import (APIRouter, Depends, Security, HTTPException,
+                     UploadFile)
 from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import Session
 from pydantic import UUID4
 from app.database import get_session
-from app.crud import (get_games, create_game, delete_game)
+from app.crud import (get_games, create_game, delete_game,
+                      get_game)
 from app.schemas import Game
 from app.dependencies import auth
 
@@ -35,6 +37,11 @@ async def delete_game(id: UUID4, db: Session=Depends(get_session),
                             detail=f"Failed to Delete, {id}!")
     return {"id": id}
 
-@router.get("/games/{id}", response_model=Game)
-async def get_game(id: UUID4, db: Session=Depends(get_session)):
+@router.get("/game/{id}", response_model=Game)
+async def get_game_id(id: UUID4, db: Session=Depends(get_session)):
     return await get_game(db, id=id)
+
+@router.post("/uploadgames/")
+async def create_upload_file(file: UploadFile):
+    print(file.filename)
+    return {"filename": file.filename}

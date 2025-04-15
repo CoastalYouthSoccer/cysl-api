@@ -47,6 +47,6 @@ async def create_season(session: AsyncSession, item: SeasonCreate):
     db_item = SeasonModel(name=item.name, start_dt=item.start_dt,
                             end_dt=item.end_dt, active=active)
     session.add(db_item)
-    session.commit()
-    session.refresh(db_item)
+    await session.commit()
+    await session.refresh(db_item)
     return db_item

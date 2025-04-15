@@ -8,6 +8,11 @@ from app.models import Association as AssociationModel
 from app.schemas import AssociationCreate
 logger = logging.getLogger(__name__)
 
+async def get_association(session: AsyncSession, id: UUID4):
+    result = await session.execute(select(AssociationModel). \
+                      where(AssociationModel.id == id))
+    return result.scalar_one()
+
 async def get_associations(session: AsyncSession, skip: int=0, limit: int=100):
     result = await session.execute(select(AssociationModel).where(AssociationModel.active == True). \
         limit(limit=limit).offset(offset=skip))
