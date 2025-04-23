@@ -4,6 +4,8 @@ from unittest.mock import patch, AsyncMock
 from sqlmodel import Session, SQLModel, create_engine
 from app.database import get_session
 from app.models import Season
+from app.routers import season as seasons_module
+
 from main import app
 from fastapi import HTTPException
 from fastapi.security import SecurityScopes
@@ -11,70 +13,52 @@ from fastapi.security import SecurityScopes
 
 NOT_AUTHENTICATED = {"detail": "Not authenticated"}
 
-@pytest.fixture(autouse=True)
-def override_get_session(mock_session):
-    app.dependency_overrides[get_session] = lambda: mock_session
-    yield
-    app.dependency_overrides.clear()
-
-# Mock auth.verify (security dependency)
-@pytest.fixture(autouse=True)
-def override_auth_verify():
-    def fake_verify(security_scopes: SecurityScopes, token: str = ""):
-        required_scopes = set(security_scopes.scopes)
-        granted_scopes = {"read:seasons", "write:seasons",
-                          "delete:seasons"} 
-
-        if not required_scopes.issubset(granted_scopes):
-            raise HTTPException(status_code=403, detail="Insufficient scope")
-
-        return "mock-user-id"
-    from app.dependencies import auth as auth_module
-    auth_module.verify = fake_verify
-    yield
-
 @pytest.mark.asyncio
-async def test_read_seasons(test_app, mock_session):
-    fake_data = [
-        {"id": "fd305323-51bb-405f-8e01-2cf30d49794a", "name": "Summer",
+async def test_read_seasons(test_app):
+    expected_results = [
+        {"id": "266c4015-6f18-4238-bbcb-7fb70ba1ea90", "name": "Spring 2025",
          "start_dt": "2025-04-05", "season_length": 8, "active": True,
-         "holiday_dates": None},
-        {"id": "d2324a88-2a89-4da5-9c22-769ea9cb27ee", "name": "Fall",
-         "start_dt": "2025-09-05", "season_length": 8, "active": True,
-         "holiday_dates": None},
+         "holiday_dates": "2025-05-24"}
     ]
-
-    # Patch the service layer function directly
-    import app.routers.season as seasons_module
-    seasons_module.get_seasons = AsyncMock(return_value=fake_data)
 
     response = await test_app.get("/seasons")
     assert response.status_code == 200
-    assert response.json() == fake_data
+    assert response.json() == expected_results
 
 @pytest.mark.asyncio
-def test_post_seasons_not_authenticated(test_app):
-    response = test_app.post("/seasons")
-    assert response.status_code ==403
+async def test_post_seasons_not_authenticated(test_app):
+    season_payload = {
+        "name": "Autumn 2025", "start_dt": "2025-01-05",
+        "season_length": 8, "active": True
+    }
+
+    response = await test_app.post("/seasons",
+                                    json=season_payload)
+    assert response.status_code == 403
     assert response.json() == NOT_AUTHENTICATED
 
 @pytest.mark.asyncio
 async def test_create_season(test_app):
     season_payload = {
         "name": "Autumn 2025", "start_dt": "2025-01-05",
-        "season_length": 8, "active": True,
-        "holiday_dates": None
+        "season_length": 8, "active": True
     }
 
-    import app.routers.season as seasons_module
-    seasons_module.create_season = AsyncMock(return_value=season_payload)
+    async def mock_verify_dependency():
+        return {"sub": "test_user",
+                "scope": "write:seasons"}
+
+    # Override the auth verifier used by FastAPI
+    app.dependency_overrides[seasons_module.verify_write_seasons] = mock_verify_dependency
 
     response = await test_app.post(
         "/seasons",
         json=season_payload,
-        headers={"Authorization": "Bearer fake-token"}
+        headers={"Authorization": "Bearer test-token"}
     )
-
     assert response.status_code == 201
     assert response.json() == season_payload
+
     seasons_module.create_season.assert_called_once()
+
+    app.dependency_overrides.clear()

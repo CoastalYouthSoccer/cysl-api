@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import update, select
 from pydantic import UUID4
 from app.models import Season as SeasonModel
-from app.schemas import SeasonCreate
+from app.schemas import Season as SeasonCreate
 logger = logging.getLogger(__name__)
 
 async def get_seasons(session: AsyncSession, skip: int=0, limit: int=100):
@@ -14,8 +14,9 @@ async def get_seasons(session: AsyncSession, skip: int=0, limit: int=100):
     return result.scalars().all()
 
 async def get_season_by_name(session: AsyncSession, name: str):
-    return await session.execute(select(SeasonModel). \
-                      where(SeasonModel.name == name)).all()
+    result = await session.execute(select(SeasonModel). \
+                      where(SeasonModel.name == name))
+    return result.scalar_one_or_none()
 
 async def get_season(session: AsyncSession, name: str):
     return await session.get(SeasonModel, id)

@@ -5,8 +5,10 @@ from pydantic import UUID4
 from app.database import get_session
 from app.crud import (get_seasons, create_season, deactivate_season,
                       get_season_by_name)
-from app.schemas import (Season, SeasonCreate)
-from app.dependencies import auth
+from app.schemas import (SeasonCreate, Season)
+from app.dependencies import verify_scopes
+
+verify_write_seasons = verify_scopes(["write:seasons"])
 
 router = APIRouter()
 
@@ -14,16 +16,14 @@ router = APIRouter()
 async def read_seasons(db: AsyncSession=Depends(get_session), skip: int=0, limit: int=100):
     return await get_seasons(db, skip=skip, limit=limit)
 
-@router.post("/seasons", response_model=SeasonCreate, status_code=201)
+@router.post("/seasons", response_model=Season, status_code=201)
 async def new_season(item: SeasonCreate, db: Session=Depends(get_session),
-               _: str = Security(auth.verify,
-                                 scopes=['write:seasons'])):
+               _: str = Depends(verify_write_seasons)):
     return await create_season(db, item=item)
 
 @router.delete("/seasons/{id}")
 async def delete_season(id: UUID4, db: Session=Depends(get_session),
-                  _: str = Security(auth.verify,
-                                    scopes=['delete:seasons'])):
+                  _: str = Depends(verify_scopes(["delete:seasons"]))):
     error = await deactivate_season(db, id=id)
     if error:
         raise HTTPException(status_code=400,
