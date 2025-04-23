@@ -47,13 +47,12 @@ async def deactivate_association(session: AsyncSession, id: UUID4):
         else:
             msg = f"Association, {temp.name}, doesn't exists!"
             logger.info(msg)
-            raise HTTPException(status_code=400, detail=msg)
+            raise HTTPException(status_code=404, detail=msg)
     except Exception as e:
         logger.error(e)
-        return True
+        raise HTTPException(status_code=404,
+                            detail=f"Failed to Delete, {id}!")
     
-    return False
-
 async def create_association(session: AsyncSession, item: AssociationCreate):
     temp = await get_association_by_name(session, name=item.name)
     if temp:

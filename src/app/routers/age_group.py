@@ -1,10 +1,15 @@
-from fastapi import APIRouter, Depends, Security, HTTPException
+from typing import Optional
+from fastapi import APIRouter, Depends
 from sqlmodel.ext.asyncio.session import AsyncSession
 from app.database import get_session
 
 from app.crud import (get_age_groups)
 from app.schemas import (AgeGroup)
+from app.dependencies import verify_scopes
 
+verify_write_age_groups = verify_scopes(["write:age_groups"])
+verify_read_age_groups = verify_scopes(["read:age_groups"])
+verify_delete_age_groups = verify_scopes(["delete:age_groups"])
 
 router = APIRouter()
 

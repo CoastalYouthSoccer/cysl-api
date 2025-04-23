@@ -1,16 +1,13 @@
-import logging
 from typing import Optional
-from fastapi import APIRouter, Depends, Security, HTTPException
+from fastapi import APIRouter, Depends
 from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import Session
 from pydantic import UUID4
 from app.database import get_session
 from app.crud import (get_seasons, create_season, deactivate_season,
-                      get_season_by_name, get_season_by_id)
+                      get_season_by_id)
 from app.schemas import (SeasonCreate, Season)
 from app.dependencies import verify_scopes
-
-logger = logging.getLogger(__name__)
 
 verify_write_seasons = verify_scopes(["write:seasons"])
 verify_read_seasons = verify_scopes(["read:seasons"])
@@ -32,7 +29,7 @@ async def new_season(item: SeasonCreate, db: Session=Depends(get_session),
                _: str = Depends(verify_write_seasons)):
     return await create_season(db, item=item)
 
-@router.delete("/season/{id}", status_code=202)
+@router.delete("/season/{id}", status_code=204)
 async def delete_season(id: UUID4, db: Session=Depends(get_session),
                   _: str = Depends(verify_delete_seasons)):
     return await deactivate_season(db, id=id)
