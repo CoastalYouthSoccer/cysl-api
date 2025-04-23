@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'src/**'
+      - '.github/workflows/build-deploy.yml'
       - 'Dockerfile'
       - '.dockerignore'
     branches:
