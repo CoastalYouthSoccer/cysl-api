@@ -42,17 +42,17 @@ async def deactivate_season(session: AsyncSession, id: UUID4):
     try:
         temp = await session.get(SeasonModel, id)
         if temp:
-            msg = f"Season, {temp.name}, already exists!"
+            result = await session.execute(
+                update(SeasonModel), [{"id": id, "active": False}]
+            )
+        else:
+            msg = f"Season, {id}, doesn't exist!"
             logger.info(msg)
-            raise HTTPException(status_code=400, detail=msg)
-        await session.execute(
-            update(SeasonModel), [{"id": id, "active": False}]
-        )
+            raise HTTPException(status_code=404, detail=msg)
     except Exception as e:
         logger.error(e)
-        return True
-    
-    return False
+        raise HTTPException(status_code=404,
+                            detail=f"Failed to Delete, {id}!")
 
 async def create_season(session: AsyncSession, item: SeasonCreate):
     temp = await get_season_by_name(session, name=item.name)

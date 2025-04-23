@@ -9,18 +9,33 @@ from app.schemas import AssociationCreate
 logger = logging.getLogger(__name__)
 
 async def get_association(session: AsyncSession, id: UUID4):
-    result = await session.execute(select(AssociationModel). \
-                      where(AssociationModel.id == id))
-    return result.scalar_one()
+    result = await session.get(AssociationModel, id)
+    if not result:
+        msg = f"Association, {id} Not Found"
+        logger.debug(msg)
+        raise HTTPException(status_code=404, detail=msg)
+    return result
 
-async def get_associations(session: AsyncSession, skip: int=0, limit: int=100):
-    result = await session.execute(select(AssociationModel).where(AssociationModel.active == True). \
-        limit(limit=limit).offset(offset=skip))
-    return result.scalars().all()
+async def get_associations(session: AsyncSession, skip: int=0, limit: int=100,
+                           name: str=None):
+    if name:
+        result = await get_association_by_name(session=session,
+                                        name=name)
+        if result:
+            return [result]
+        else:
+            msg = f"Association, {name} Not Found"
+            logger.debug(msg)
+            raise HTTPException(status_code=404, detail=msg)
+    else:
+        result = await session.execute(select(AssociationModel).where(AssociationModel.active == True). \
+            limit(limit=limit).offset(offset=skip))
+        return result.scalars().all()
 
 async def get_association_by_name(session: AsyncSession, name: str):
-    return await session.execute(select(AssociationModel). \
-                      where(AssociationModel.name == name)).all()
+    result = await session.execute(select(AssociationModel). \
+                      where(AssociationModel.name == name))
+    return result.scalar_one_or_none()
 
 async def deactivate_association(session: AsyncSession, id: UUID4):
     try:
@@ -47,8 +62,7 @@ async def create_association(session: AsyncSession, item: AssociationCreate):
         raise HTTPException(status_code=400, detail=msg)
 
     active = True if item.active is None else item.active
-    db_item = AssociationModel(name=item.name, start_dt=item.start_dt,
-                            end_dt=item.end_dt, active=active)
+    db_item = AssociationModel(name=item.name, active=active)
     session.add(db_item)
     session.commit()
     session.refresh(db_item)

@@ -11,8 +11,9 @@ from app.dependencies import auth
 router = APIRouter()
 
 @router.get("/associations", response_model=list[Association])
-async def read_associations(db: AsyncSession=Depends(get_session), skip: int=0, limit: int=100):
-    return await get_associations(db, skip=skip, limit=limit)
+async def read_associations(db: AsyncSession=Depends(get_session), skip: int=0,
+                            limit: int=100, name: str=None):
+    return await get_associations(db, skip=skip, limit=limit, name=name)
 
 @router.post("/associations", response_model=AssociationCreate, status_code=201)
 async def new_association(item: AssociationCreate, db: Session=Depends(get_session),
