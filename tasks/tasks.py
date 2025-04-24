@@ -77,7 +77,7 @@ def set_game_dt(game_date, game_time):
                                      "%m/%d/%Y %H:%M:%S")
         else:
             return datetime.strptime(f"{game_date}", "%m/%d/%Y")
-    except Exception as e:
+    except Exception:
         logger.error(f'Invalid date and time: {game_date} , {game_time}')
         return None
 

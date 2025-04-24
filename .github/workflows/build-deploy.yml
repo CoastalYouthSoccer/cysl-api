@@ -4,10 +4,8 @@ on:
   push:
     paths:
       - 'src/**'
-      - '.github/workflows/build-deploy.yml'
       - 'Dockerfile'
       - '.dockerignore'
-      - 'sonar-project.properties'
     branches:
       - '**'
       - '!releases/**'

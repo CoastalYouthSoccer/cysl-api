@@ -42,7 +42,7 @@ async def deactivate_season(session: AsyncSession, id: UUID4):
     try:
         temp = await session.get(SeasonModel, id)
         if temp:
-            result = await session.execute(
+            _ = await session.execute(
                 update(SeasonModel), [{"id": id, "active": False}]
             )
         else:
