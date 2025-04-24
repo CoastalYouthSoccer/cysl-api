@@ -13,7 +13,7 @@ on:
 env:
   DB_NAME: testdb
   DB_USERNAME: root
-  DB_PASSWORD: testrootpss
+  DB_PASSWORD: testrootpass
 
 jobs:    
   build_deploy:
@@ -60,6 +60,7 @@ jobs:
     - name: Load Database
       run: |
         export DATABASE_URL="mysql+asyncmy://${{ env.DB_USERNAME }}:${{ env.DB_PASSWORD }}@localhost:3306/${{ env.DB_NAME }}"
+        env
         alembic upgrade head
         ./tests/load_db.sh -u ${{ env.DB_USERNAME }} -p ${{ env.DB_PASSWORD }} -d ${{ env.DB_NAME }}
 
