@@ -54,7 +54,7 @@ class VerifyToken:
                      token: Optional[HTTPAuthorizationCredentials] = Depends(HTTPBearer())
                      ):
         if token is None:
-            raise UnauthenticatedException
+            raise UnauthenticatedException(str("No Token Provided"))
 
         # This gets the 'kid' from the passed token
         try:

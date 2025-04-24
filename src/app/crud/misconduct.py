@@ -66,6 +66,6 @@ async def create_misconduct(session: AsyncSession, item: Misconduct):
                               minute=item.minute, offender_team=item.offender_team,
                               description=item.description)
     session.add(db_item)
-    session.commit()
-    session.refresh(db_item)
+    await session.commit()
+    await session.refresh(db_item)
     return db_item

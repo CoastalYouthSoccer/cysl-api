@@ -22,3 +22,7 @@ class Season(SeasonBase, table=True):
 
 class SeasonCreate(SeasonBase):
     pass
+
+
+class SeasonRead(SeasonBase):
+    id: uuid.UUID

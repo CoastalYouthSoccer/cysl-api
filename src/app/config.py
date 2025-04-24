@@ -6,15 +6,16 @@ class Settings(BaseSettings):
     auth0_domain: str
     auth0_api_audience: str
     auth0_issuer: str
-    auth0_algorithms: str
+    auth0_algorithms: str = "RS256"
     database_url: str
+    celery_database_url: str
     log_level: int = 30
     assignr_client_id: str
     assignr_client_secret: str
-    assignr_client_scope: str
-    assignr_base_url: str
-    assignr_auth_url: str
-    http_origins: str
+    assignr_client_scope: str = "read write"
+    assignr_base_url: str = "https://api.assignr.com/api/v2/"
+    assignr_auth_url: str = "https://app.assignr.com/oauth/token"
+    http_origins: str = "*"
     otel_service_name: str = "cysl-backend"
     otel_instance_id: str = ""
     otel_insecure: bool = False

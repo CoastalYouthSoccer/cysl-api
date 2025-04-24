@@ -1,3 +1,4 @@
+from os import environ
 import asyncio
 from logging.config import fileConfig
 
@@ -8,12 +9,16 @@ from sqlmodel import SQLModel
 
 from alembic import context
 
-from app.models import Venue, Association, Season, Misconduct, SubVenue
+from app.models import (Venue, Association, Season, Misconduct, SubVenue, Game,
+                        AgeGroup)
 from app.config import get_settings
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
+
+for key, value in environ.items():
+    print(f"{key}={value}")
 
 app_config = get_settings()
 
