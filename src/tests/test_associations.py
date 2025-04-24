@@ -12,11 +12,11 @@ async def test_read_associations(test_app):
             "id": "53aeb5c2-590d-4332-8dec-591b1c276d83", "name": "Atlanta",
             "active": True
         }, {
-            "id": "a3cb9efb-73e8-4758-b547-6b8fb5fd2ba1", "name": "Boston",
-            "active": True
-        }, {
             "id": "7297e8d0-0d1c-49c7-a3fa-814b809cfafc", "name": "Chicago",
             "active": True            
+        }, {
+            "id": "a3cb9efb-73e8-4758-b547-6b8fb5fd2ba1", "name": "Boston",
+            "active": True
         }, {
             "id": "d61a1dfb-ebe4-46ac-8210-7e8ecebc7c2d", "name": "Detroit",
             "active": True
@@ -98,9 +98,8 @@ async def test_create_association_already_exists(test_app):
 @pytest.mark.asyncio
 async def test_read_association_by_name_found(test_app):
     expected_results = [{
-        "id": "266c4015-6f18-4238-bbcb-7fb70ba1ea90", "name": "Spring 2025",
-         "start_dt": "2025-04-05", "association_length": 8, "active": True,
-         "holiday_dates": "2025-05-24"
+        "id": "53aeb5c2-590d-4332-8dec-591b1c276d83", "name": "Atlanta",
+        "active": True
     }]
 
     async def mock_verify_dependency():
@@ -110,7 +109,7 @@ async def test_read_association_by_name_found(test_app):
     app.dependency_overrides[associations_module.verify_read_associations] = mock_verify_dependency
 
     response = await test_app.get(
-        "/associations?name=Spring 2025",
+        "/associations?name=Atlanta",
         headers={"Authorization": "Bearer test-token"}
     )
     assert response.status_code == 200
@@ -127,20 +126,19 @@ async def test_read_association_by_name_not_found(test_app):
     app.dependency_overrides[associations_module.verify_read_associations] = mock_verify_dependency
 
     response = await test_app.get(
-        "/associations?name=Spring 2099",
+        "/associations?name=No Association",
         headers={"Authorization": "Bearer test-token"}
     )
     assert response.status_code == 404
-    assert response.json()['detail'] == "association, Spring 2099 Not Found"
+    assert response.json()['detail'] == "Association, No Association, Not Found"
 
     app.dependency_overrides.clear()
 
 @pytest.mark.asyncio
 async def test_read_association_by_id_found(test_app):
     expected_results = {
-        "id": "266c4015-6f18-4238-bbcb-7fb70ba1ea90", "name": "Spring 2025",
-         "start_dt": "2025-04-05", "association_length": 8, "active": True,
-         "holiday_dates": "2025-05-24"
+        "id": "53aeb5c2-590d-4332-8dec-591b1c276d83", "name": "Atlanta",
+        "active": True
     }
 
     async def mock_verify_dependency():
@@ -150,7 +148,7 @@ async def test_read_association_by_id_found(test_app):
     app.dependency_overrides[associations_module.verify_read_associations] = mock_verify_dependency
 
     response = await test_app.get(
-        "/association/266c40156f184238bbcb7fb70ba1ea90",
+        "/association/53aeb5c2590d43328dec591b1c276d83",
         headers={"Authorization": "Bearer test-token"}
     )
     assert response.status_code == 200
@@ -171,7 +169,7 @@ async def test_read_association_by_id_not_found(test_app):
         headers={"Authorization": "Bearer test-token"}
     )
     assert response.status_code == 404
-    assert response.json()['detail'] == "association, 266c4015-6f18-4248-bbcb-7fb70ba1ea90 Not Found"
+    assert response.json()['detail'] == "Association, 266c4015-6f18-4248-bbcb-7fb70ba1ea90, Not Found"
 
     app.dependency_overrides.clear()
 
@@ -184,10 +182,10 @@ async def test_delete_association_successfully(test_app):
     app.dependency_overrides[associations_module.verify_delete_associations] = mock_verify_dependency
 
     response = await test_app.delete(
-        "/association/266c40156f184238bbcb7fb70ba1ea90",
+        "/association/53aeb5c2590d43328dec591b1c276d83",
         headers={"Authorization": "Bearer test-token"}
     )
-    assert response.status_code == 402
+    assert response.status_code == 204
 
     app.dependency_overrides.clear()
 

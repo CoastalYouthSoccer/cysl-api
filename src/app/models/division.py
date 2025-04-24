@@ -5,6 +5,7 @@ from sqlmodel import SQLModel, Field
 
 class DivisionBase(SQLModel):
     name: str
+    active: bool
 
 
 class Division(DivisionBase, table=True):

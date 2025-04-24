@@ -4,7 +4,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import Session
 from pydantic import UUID4
 from app.database import get_session
-from app.crud import (get_divisions,deactivate_division,
+from app.crud import (get_divisions, deactivate_division,
                       create_division, get_division_by_id)
 from app.schemas import (Division, DivisionCreate)
 from app.dependencies import verify_scopes

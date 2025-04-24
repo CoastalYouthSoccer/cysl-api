@@ -10,13 +10,13 @@ NOT_AUTHENTICATED = {"detail": "Not authenticated"}
 async def test_read_divisions(test_app):
     expected_results = [
         {
-            "id": "f6df477c-725c-4452-8883-7116da08a1a4", "name": "D1",
+            "id": "62e3452a-bda7-4e57-83ee-aad9549b400d", "name": "Serie A",
             "active": True
         }, {
             "id": "abc92d02-9717-4c2a-a7e8-e217145abb2c", "name": "D2",
-            "active": True           
+            "active": True
         }, {
-            "id": "62e3452a-bda7-4e57-83ee-aad9549b400d", "name": "Serie A",
+            "id": "f6df477c-725c-4452-8883-7116da08a1a4", "name": "D1",
             "active": True
         }
     ]
@@ -67,7 +67,7 @@ async def test_create_division_success(test_app):
 
 @pytest.mark.asyncio
 async def test_create_division_already_exists(test_app):
-    division_payload = {
+    payload = {
         "name": "Division Exists", "active": True
     }
 
@@ -80,12 +80,12 @@ async def test_create_division_already_exists(test_app):
 
     response = await test_app.post(
         "/divisions",
-        json=division_payload,
+        json=payload,
         headers={"Authorization": "Bearer test-token"}
     )
     assert response.status_code == 201
 
-    response = await test_app.post("/divisions", json=division_payload,
+    response = await test_app.post("/divisions", json=payload,
                                    headers={"Authorization": "Bearer test-token"})
     assert response.status_code == 400
     assert "already exists" in response.json()["detail"]
@@ -127,7 +127,7 @@ async def test_read_division_by_name_not_found(test_app):
         headers={"Authorization": "Bearer test-token"}
     )
     assert response.status_code == 404
-    assert response.json()['detail'] == "division, D2099 Not Found"
+    assert response.json()['detail'] == "Division, D2099, Not Found"
 
     app.dependency_overrides.clear()
 
@@ -166,7 +166,7 @@ async def test_read_division_by_id_not_found(test_app):
         headers={"Authorization": "Bearer test-token"}
     )
     assert response.status_code == 404
-    assert response.json()['detail'] == "division, 266c4015-6f18-4248-bbcb-7fb70ba1ea90 Not Found"
+    assert response.json()['detail'] == "Division, 266c4015-6f18-4248-bbcb-7fb70ba1ea90, Not Found"
 
     app.dependency_overrides.clear()
 
@@ -182,7 +182,7 @@ async def test_delete_division_successfully(test_app):
         "/division/f6df477c725c445288837116da08a1a4",
         headers={"Authorization": "Bearer test-token"}
     )
-    assert response.status_code == 402
+    assert response.status_code == 204
 
     app.dependency_overrides.clear()
 

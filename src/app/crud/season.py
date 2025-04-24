@@ -17,7 +17,7 @@ async def get_seasons(session: AsyncSession, skip: int=0, limit: int=100,
         if result:
             return [result]
         else:
-            msg = f"Season, {name} Not Found"
+            msg = f"Season, {name}, Not Found"
             logger.debug(msg)
             raise HTTPException(status_code=404, detail=msg)
     else:
@@ -33,7 +33,7 @@ async def get_season_by_name(session: AsyncSession, name: str):
 async def get_season_by_id(session: AsyncSession, id: UUID4):
     result = await session.get(SeasonModel, id)
     if not result:
-        msg = f"Season, {id} Not Found"
+        msg = f"Season, {id}, Not Found"
         logger.debug(msg)
         raise HTTPException(status_code=404, detail=msg)
     return result

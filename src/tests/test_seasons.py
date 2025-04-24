@@ -125,7 +125,7 @@ async def test_read_season_by_name_not_found(test_app):
         headers={"Authorization": "Bearer test-token"}
     )
     assert response.status_code == 404
-    assert response.json()['detail'] == "Season, Spring 2099 Not Found"
+    assert response.json()['detail'] == "Season, Spring 2099, Not Found"
 
     app.dependency_overrides.clear()
 
@@ -165,7 +165,7 @@ async def test_read_season_by_id_not_found(test_app):
         headers={"Authorization": "Bearer test-token"}
     )
     assert response.status_code == 404
-    assert response.json()['detail'] == "Season, 266c4015-6f18-4248-bbcb-7fb70ba1ea90 Not Found"
+    assert response.json()['detail'] == "Season, 266c4015-6f18-4248-bbcb-7fb70ba1ea90, Not Found"
 
     app.dependency_overrides.clear()
 

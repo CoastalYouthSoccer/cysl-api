@@ -16,7 +16,7 @@ async def get_divisions(session: AsyncSession, skip: int=0, limit: int=100,
         if result:
             return [result]
         else:
-            msg = f"Division, {name} Not Found"
+            msg = f"Division, {name}, Not Found"
             logger.debug(msg)
             raise HTTPException(status_code=404, detail=msg)
     else:
@@ -32,7 +32,7 @@ async def get_division_by_name(session: AsyncSession, name: str):
 async def get_division_by_id(session: AsyncSession, id: UUID4):
     result = await session.get(DivisionModel, id)
     if not result:
-        msg = f"Division, {id} Not Found"
+        msg = f"Division, {id}, Not Found"
         logger.debug(msg)
         raise HTTPException(status_code=404, detail=msg)
     return result
@@ -63,6 +63,6 @@ async def create_division(session: AsyncSession, item: DivisionCreate):
     active = True if item.active is None else item.active
     db_item = DivisionModel(name=item.name, active=active)
     session.add(db_item)
-    session.commit()
-    session.refresh(db_item)
+    await session.commit()
+    await session.refresh(db_item)
     return db_item

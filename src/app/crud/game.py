@@ -47,8 +47,8 @@ async def create_game(session: AsyncSession, item: Game):
                         game_dt=item.game_dt, away_team=item.away_team,
                         sub_venue_id=item.sub_venue_id)
     session.add(db_item)
-    session.commit()
-    session.refresh(db_item)
+    await session.commit()
+    await session.refresh(db_item)
     return db_item
 
 async def delete_game(session: AsyncSession, id: UUID4):

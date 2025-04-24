@@ -9,7 +9,8 @@ from typing import Dict
 
 from app.schemas import (Game, AgeGroup, Association, Venue, Season, Misconduct)
 from app.assignr.assignr import Assignr
-from app.routers import (age_group, association, misconduct, season, game)
+from app.routers import (age_group, association, misconduct, season, game,
+                         division)
 from app.config import get_settings
 from app.dependencies import auth
 
@@ -52,6 +53,9 @@ app.include_router(game.router)
 
 # association endpoints
 app.include_router(association.router)
+
+# division endpoints
+app.include_router(division.router)
 
 # season endpoints
 app.include_router(season.router)

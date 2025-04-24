@@ -16,7 +16,7 @@ async def get_associations(session: AsyncSession, skip: int=0, limit: int=100,
         if result:
             return [result]
         else:
-            msg = f"Association, {name} Not Found"
+            msg = f"Association, {name}, Not Found"
             logger.debug(msg)
             raise HTTPException(status_code=404, detail=msg)
     else:
@@ -32,7 +32,7 @@ async def get_association_by_name(session: AsyncSession, name: str):
 async def get_association_by_id(session: AsyncSession, id: UUID4):
     result = await session.get(AssociationModel, id)
     if not result:
-        msg = f"Association, {id} Not Found"
+        msg = f"Association, {id}, Not Found"
         logger.debug(msg)
         raise HTTPException(status_code=404, detail=msg)
     return result
@@ -63,6 +63,6 @@ async def create_association(session: AsyncSession, item: AssociationCreate):
     active = True if item.active is None else item.active
     db_item = AssociationModel(name=item.name, active=active)
     session.add(db_item)
-    session.commit()
-    session.refresh(db_item)
+    await session.commit()
+    await session.refresh(db_item)
     return db_item
