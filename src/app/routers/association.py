@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from pydantic import UUID4
 from app.database import get_session
 from app.crud import (get_associations,deactivate_association,
-                      create_association, get_association)
+                      create_association, get_association_by_id)
 from app.schemas import (Association, AssociationCreate)
 from app.dependencies import verify_scopes
 
@@ -36,5 +36,6 @@ async def delete_association(id: UUID4, db: Session=Depends(get_session),
     return await deactivate_association(db, id=id)
 
 @router.get("/association/{id}", response_model=Association)
-async def get_association_id(id: UUID4, db: Session=Depends(get_session)):
-    return await get_association(db, id)
+async def get_association_id(id: UUID4, db: Session=Depends(get_session),
+                             _: str = Depends(verify_read_associations)):
+    return await get_association_by_id(db, id)

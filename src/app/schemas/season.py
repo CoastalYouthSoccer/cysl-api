@@ -2,7 +2,7 @@ from datetime import date
 from typing import Optional
 from pydantic import StringConstraints, UUID4
 from typing_extensions import Annotated
-from .base import Base, BaseCreate
+from .base import BaseCreate
 
 
 class SeasonCreate(BaseCreate):

@@ -1,10 +1,10 @@
 from typing import Optional
 from pydantic import StringConstraints, UUID4
 from typing_extensions import Annotated
-from .base import Base, BaseCreate
+from .base import BaseCreate
 
 
-class AssociationCreate(BaseCreate):
+class DivisionCreate(BaseCreate):
     name: Annotated[str, StringConstraints(max_length=100)]
     active: Optional[bool] = True
 
@@ -12,5 +12,5 @@ class AssociationCreate(BaseCreate):
         from_attributes = True
 
 
-class Association(AssociationCreate):
+class Division(DivisionCreate):
     id: UUID4
