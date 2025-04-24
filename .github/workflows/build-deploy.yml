@@ -61,7 +61,6 @@ jobs:
       run: |
         cp ci.env .env
         export DATABASE_URL="mysql+asyncmy://${{ env.DB_USERNAME }}:${{ env.DB_PASSWORD }}@localhost:3306/${{ env.DB_NAME }}"
-        echo ${{ env.DATABASE_URL }} ${{ env.DB_USERNAME }}
         alembic upgrade head
         ./tests/load_db.sh -u ${{ env.DB_USERNAME }} -p ${{ env.DB_PASSWORD }} -d ${{ env.DB_NAME }}
 
