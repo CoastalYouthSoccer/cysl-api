@@ -39,12 +39,11 @@ def test_client():
 
 @pytest.fixture(scope="session")
 def event_loop():
-    import asyncio
     loop = asyncio.get_event_loop()
     yield loop
     loop.close()
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="session")
 async def test_app():
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport,
