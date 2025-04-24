@@ -6,7 +6,7 @@ from main import app
 
 NOT_AUTHENTICATED = {"detail": "Not authenticated"}
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio(scope="session")
 async def test_read_divisions(test_app):
     expected_results = [
         {
@@ -33,7 +33,7 @@ async def test_read_divisions(test_app):
 
     app.dependency_overrides.clear()
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio(scope="session")
 async def test_post_divisions_not_authenticated(test_app):
     division_payload = {
         "name": "Failed Division", "active": True
@@ -44,7 +44,7 @@ async def test_post_divisions_not_authenticated(test_app):
     assert response.status_code == 403
     assert response.json() == NOT_AUTHENTICATED
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio(scope="session")
 async def test_create_division_success(test_app):
     division_payload = {
         "name": "Division Works", "active": True
@@ -65,7 +65,7 @@ async def test_create_division_success(test_app):
 
     app.dependency_overrides.clear()
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio(scope="session")
 async def test_create_division_already_exists(test_app):
     payload = {
         "name": "Division Exists", "active": True
@@ -92,7 +92,7 @@ async def test_create_division_already_exists(test_app):
 
     app.dependency_overrides.clear()
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio(scope="session")
 async def test_read_division_by_name_found(test_app):
     expected_results = [{
         "id": "f6df477c-725c-4452-8883-7116da08a1a4", "name": "D1",
@@ -114,7 +114,7 @@ async def test_read_division_by_name_found(test_app):
 
     app.dependency_overrides.clear()
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio(scope="session")
 async def test_read_division_by_name_not_found(test_app):
     async def mock_verify_dependency():
         return {"sub": "test_user",
@@ -131,7 +131,7 @@ async def test_read_division_by_name_not_found(test_app):
 
     app.dependency_overrides.clear()
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio(scope="session")
 async def test_read_division_by_id_found(test_app):
     expected_results = {
         "id": "f6df477c-725c-4452-8883-7116da08a1a4", "name": "D1",
@@ -153,7 +153,7 @@ async def test_read_division_by_id_found(test_app):
 
     app.dependency_overrides.clear()
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio(scope="session")
 async def test_read_division_by_id_not_found(test_app):
     async def mock_verify_dependency():
         return {"sub": "test_user",
@@ -170,7 +170,7 @@ async def test_read_division_by_id_not_found(test_app):
 
     app.dependency_overrides.clear()
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio(scope="session")
 async def test_delete_division_successfully(test_app):
     async def mock_verify_dependency():
         return {"sub": "test_user",
@@ -186,7 +186,7 @@ async def test_delete_division_successfully(test_app):
 
     app.dependency_overrides.clear()
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio(scope="session")
 async def test_delete_division_not_found(test_app):
     async def mock_verify_dependency():
         return {"sub": "test_user",

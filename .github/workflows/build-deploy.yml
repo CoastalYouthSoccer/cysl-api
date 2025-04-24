@@ -68,13 +68,8 @@ jobs:
     - name: Test with pytest
       run: |
         export DATABASE_URL="mysql+asyncmy://${{ env.DB_USERNAME }}:${{ env.DB_PASSWORD }}@localhost:3306/${{ env.DB_NAME }}"
-        coverage run -m pytest || true
+        coverage run -m pytest --junitxml=coverage.xml || true
         coverage xml -o coverage.xml
-
-    - name: Generate reports and fix code coverage paths for Sonarcloud
-      run: |
-        sed -i 's@'$GITHUB_WORKSPACE'@/github/workspace/@g' coverage.xml
-        cat coverage.xml
 
     - name: SonarCloud Scan
       uses: SonarSource/sonarcloud-github-action@v3.1.0

@@ -4,7 +4,7 @@ import pytest
 
 from app.models import (Season, Misconduct)
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio(scope="session")
 @pytest.mark.usefixtures("init_database")
 class TestSeasonTable:
     """Test Season Table"""

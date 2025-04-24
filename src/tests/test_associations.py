@@ -5,7 +5,7 @@ from main import app
 
 NOT_AUTHENTICATED = {"detail": "Not authenticated"}
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio(scope="session")
 async def test_read_associations(test_app):
     expected_results = [
         {
@@ -36,7 +36,7 @@ async def test_read_associations(test_app):
 
     app.dependency_overrides.clear()
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio(scope="session")
 async def test_post_associations_not_authenticated(test_app):
     payload = {
         "name": "Bad Association", "active": True
@@ -47,7 +47,7 @@ async def test_post_associations_not_authenticated(test_app):
     assert response.status_code == 403
     assert response.json() == NOT_AUTHENTICATED
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio(scope="session")
 async def test_create_association_success(test_app):
     payload = {
         "name": "Good Association", "active": True
@@ -68,7 +68,7 @@ async def test_create_association_success(test_app):
 
     app.dependency_overrides.clear()
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio(scope="session")
 async def test_create_association_already_exists(test_app):
     payload = {
         "name": "Association Exists", "active": True
@@ -95,7 +95,7 @@ async def test_create_association_already_exists(test_app):
 
     app.dependency_overrides.clear()
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio(scope="session")
 async def test_read_association_by_name_found(test_app):
     expected_results = [{
         "id": "53aeb5c2-590d-4332-8dec-591b1c276d83", "name": "Atlanta",
@@ -117,7 +117,7 @@ async def test_read_association_by_name_found(test_app):
 
     app.dependency_overrides.clear()
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio(scope="session")
 async def test_read_association_by_name_not_found(test_app):
     async def mock_verify_dependency():
         return {"sub": "test_user",
@@ -134,7 +134,7 @@ async def test_read_association_by_name_not_found(test_app):
 
     app.dependency_overrides.clear()
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio(scope="session")
 async def test_read_association_by_id_found(test_app):
     expected_results = {
         "id": "53aeb5c2-590d-4332-8dec-591b1c276d83", "name": "Atlanta",
@@ -156,7 +156,7 @@ async def test_read_association_by_id_found(test_app):
 
     app.dependency_overrides.clear()
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio(scope="session")
 async def test_read_association_by_id_not_found(test_app):
     async def mock_verify_dependency():
         return {"sub": "test_user",
@@ -173,7 +173,7 @@ async def test_read_association_by_id_not_found(test_app):
 
     app.dependency_overrides.clear()
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio(scope="session")
 async def test_delete_association_successfully(test_app):
     async def mock_verify_dependency():
         return {"sub": "test_user",
@@ -189,7 +189,7 @@ async def test_delete_association_successfully(test_app):
 
     app.dependency_overrides.clear()
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio(scope="session")
 async def test_delete_association_not_found(test_app):
     async def mock_verify_dependency():
         return {"sub": "test_user",

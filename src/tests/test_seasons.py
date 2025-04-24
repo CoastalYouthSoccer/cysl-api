@@ -6,7 +6,7 @@ from main import app
 
 NOT_AUTHENTICATED = {"detail": "Not authenticated"}
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio(scope="session")
 async def test_read_seasons(test_app):
     expected_results = [
         {"id": "266c4015-6f18-4238-bbcb-7fb70ba1ea90", "name": "Spring 2025",
@@ -27,7 +27,7 @@ async def test_read_seasons(test_app):
 
     app.dependency_overrides.clear()
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio(scope="session")
 async def test_post_seasons_not_authenticated(test_app):
     payload = {
         "name": "Autumn 2025", "start_dt": "2025-01-05",
@@ -39,7 +39,7 @@ async def test_post_seasons_not_authenticated(test_app):
     assert response.status_code == 403
     assert response.json() == NOT_AUTHENTICATED
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio(scope="session")
 async def test_create_season_success(test_app):
     payload = {
         "name": "Autumn 2025", "start_dt": "2025-01-05",
@@ -61,7 +61,7 @@ async def test_create_season_success(test_app):
 
     app.dependency_overrides.clear()
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio(scope="session")
 async def test_create_season_already_exists(test_app):
     payload = {
         "name": "Season Exists", "start_dt": "2025-01-05",
@@ -89,7 +89,7 @@ async def test_create_season_already_exists(test_app):
 
     app.dependency_overrides.clear()
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio(scope="session")
 async def test_read_season_by_name_found(test_app):
     expected_results = [{
         "id": "266c4015-6f18-4238-bbcb-7fb70ba1ea90", "name": "Spring 2025",
@@ -112,7 +112,7 @@ async def test_read_season_by_name_found(test_app):
 
     app.dependency_overrides.clear()
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio(scope="session")
 async def test_read_season_by_name_not_found(test_app):
     async def mock_verify_dependency():
         return {"sub": "test_user",
@@ -129,7 +129,7 @@ async def test_read_season_by_name_not_found(test_app):
 
     app.dependency_overrides.clear()
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio(scope="session")
 async def test_read_season_by_id_found(test_app):
     expected_results = {
         "id": "266c4015-6f18-4238-bbcb-7fb70ba1ea90", "name": "Spring 2025",
@@ -152,7 +152,7 @@ async def test_read_season_by_id_found(test_app):
 
     app.dependency_overrides.clear()
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio(scope="session")
 async def test_read_season_by_id_not_found(test_app):
     async def mock_verify_dependency():
         return {"sub": "test_user",
@@ -169,7 +169,7 @@ async def test_read_season_by_id_not_found(test_app):
 
     app.dependency_overrides.clear()
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio(scope="session")
 async def test_delete_season_successfully(test_app):
     async def mock_verify_dependency():
         return {"sub": "test_user",
@@ -185,7 +185,7 @@ async def test_delete_season_successfully(test_app):
 
     app.dependency_overrides.clear()
 
-@pytest.mark.asyncio
+@pytest.mark.asyncio(scope="session")
 async def test_delete_season_not_found(test_app):
     async def mock_verify_dependency():
         return {"sub": "test_user",
