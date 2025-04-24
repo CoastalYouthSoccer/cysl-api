@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from pydantic import UUID4
 from app.database import get_session
 from app.crud import (get_games, create_game, delete_game,
-                      get_game)
+                      get_game, update_game)
 from app.schemas import Game
 from app.dependencies import auth
 
@@ -22,7 +22,7 @@ async def new_game(item: Game, db: Session=Depends(get_session),
     return await create_game(db, item=item)
 
 @router.post("/games/{id}")
-async def update_game(id: UUID4, item: Game, db: Session=Depends(get_session),
+async def update_games(id: UUID4, item: Game, db: Session=Depends(get_session),
                _: str = Security(auth.verify,
                                  scopes=['write:game'])):
     return await update_game(db, id=id, item=item)
