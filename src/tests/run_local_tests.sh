@@ -4,8 +4,8 @@
 source ./common_code.sh
 ORIG_PWD=$(pwd)
 cd ..
-echo "DROP DATABASE IF EXISTS $DB_NAME;" | mysql -u $DB_USER -p$DB_PASSWORD
-echo "CREATE DATABASE IF NOT EXISTS $DB_NAME;" | mysql -u $DB_USER -p$DB_PASSWORD
+mysql -e "DROP DATABASE IF EXISTS $DB_NAME;" -u $DB_USER -p$DB_PASSWORD -h 127.0.0.1
+mysql -e "CREATE DATABASE IF NOT EXISTS $DB_NAME;" -u $DB_USER -p$DB_PASSWORD -h 127.0.0.1
 
 export DATABASE_URL="mysql+asyncmy://$DB_USER:$DB_PASSWORD@localhost:3306/$DB_NAME"
 alembic upgrade head
