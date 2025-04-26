@@ -1,8 +1,10 @@
-from .age_group import AgeGroup
-from .season import (Season, SeasonCreate)
-from .association import (Association, AssociationCreate)
-from .division import (Division, DivisionCreate)
-from .game import Game
-from .venue import Venue
-from .misconduct import (Misconduct, MisconductCreate)
-from .misc import (RefereeAssignment, VenueGame, GameTimes, VenueSchedule)
+from .age_group import AgeGroup #noqa
+from .season import (Season, SeasonCreate) #noqa
+from .address import (Address, AddressCreate) #noqa
+from .association import (Association, AssociationCreate) #noqa
+from .division import (Division, DivisionCreate) #noqa
+from .game import Game #noqa
+from .venue_sub_venue import (Venue, VenueCreate, SubVenue, SubVenueCreate,
+                              AssignrVenue) #noqa
+from .misconduct import (Misconduct, MisconductCreate) #noqa
+from .misc import (RefereeAssignment, VenueGame, GameTimes, VenueSchedule) #noqa

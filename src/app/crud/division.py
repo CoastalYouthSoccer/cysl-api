@@ -58,7 +58,7 @@ async def create_division(session: AsyncSession, item: DivisionCreate):
     if temp:
         msg = f"Division, {item.name}, already exists!"
         logger.info(msg)
-        raise HTTPException(status_code=400, detail=msg)
+        raise HTTPException(status_code=409, detail=msg)
 
     active = True if item.active is None else item.active
     db_item = DivisionModel(name=item.name, active=active)

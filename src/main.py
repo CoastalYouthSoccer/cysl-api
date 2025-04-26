@@ -7,10 +7,10 @@ from fastapi.security import HTTPBearer, SecurityScopes
 from starlette.middleware.cors import CORSMiddleware
 from typing import Dict
 
-from app.schemas import (Game, AgeGroup, Association, Venue, Season, Misconduct)
+from app.schemas import AssignrVenue
 from app.assignr.assignr import Assignr
 from app.routers import (age_group, association, misconduct, season, game,
-                         division)
+                         division, venue)
 from app.config import get_settings
 from app.dependencies import auth
 
@@ -43,8 +43,8 @@ app.add_middleware(
 async def pong():
     return {"ping": "pong!"}
 
-# venue endpoints
-@app.get("/venues", response_model=list[Venue])
+# Assignr venue endpoints
+@app.get("/assignr-venues", response_model=list[AssignrVenue])
 def read_venues():
     return assignr.get_venues()
 
@@ -65,3 +65,6 @@ app.include_router(age_group.router)
 
 # misconduct endpoints
 app.include_router(misconduct.router)
+
+# venue endpoints
+app.include_router(venue.router)

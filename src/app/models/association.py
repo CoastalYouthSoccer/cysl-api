@@ -3,18 +3,19 @@ import uuid
 
 from typing import Optional
 
-from sqlmodel import SQLModel, Field
+from sqlmodel import SQLModel, Field, Relationship
+from .common import SQLNameBase
 
 
-class AssociationBase(SQLModel):
-    name: str
-    active: Optional[bool] = True
+class AssociationBase(SQLNameBase):
+    pass
 
 
 class Association(AssociationBase, table=True):
     __tablename__: str = 'association'
     id: uuid.UUID = Field(default_factory=uuid.uuid4,
                             primary_key=True)
+    venues: list["Venue"] = Relationship(back_populates='association')
 
 
 class AssociationCreate(AssociationBase):

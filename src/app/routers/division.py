@@ -25,7 +25,7 @@ async def read_divisions(
     ):
     return await get_divisions(db, skip=skip, limit=limit, name=name)
 
-@router.post("/divisions", response_model=DivisionCreate, status_code=201)
+@router.post("/divisions", response_model=Division, status_code=201)
 async def new_division(item: DivisionCreate, db: Session=Depends(get_session),
                _: str = Depends(verify_write_divisions)):
     return await create_division(db, item=item)

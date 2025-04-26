@@ -40,7 +40,7 @@ async def create_game(session: AsyncSession, item: Game):
     if temp:
         msg = f"Game, {temp.id}, already exists!"
         logger.info(msg)
-        raise HTTPException(status_code=400, detail=msg)
+        raise HTTPException(status_code=409, detail=msg)
 
     db_item = GameModel(season_id=item.season_id, division_id=item.division_id,
                         age_group_id=item.age_group_id, home_team=item.home_team,

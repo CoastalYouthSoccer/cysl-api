@@ -10,15 +10,13 @@ class SeasonCreate(BaseCreate):
     start_dt: date
     season_length: int
     holiday_dates: str | None = None
-    active: bool | None = True
-
 
     class Config:
         from_attributes = True
 
+
 class Season(SeasonCreate):
     id: UUID4
-
 
     class Config:
         from_attributes = True

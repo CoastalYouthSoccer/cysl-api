@@ -59,7 +59,7 @@ async def create_season(session: AsyncSession, item: SeasonCreate):
     if temp:
         msg = f"Season, {item.name}, already exists!"
         logger.info(msg)
-        raise HTTPException(status_code=400, detail=msg)
+        raise HTTPException(status_code=409, detail=msg)
 
     active = True if item.active is None else item.active
     db_item = SeasonModel(name=item.name, start_dt=item.start_dt,

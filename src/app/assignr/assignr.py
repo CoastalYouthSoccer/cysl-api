@@ -9,6 +9,7 @@ START_TIME = '.startTime'
 NOT_ASSIGNED = "Not Assigned"
 SEARCH_START_DT = "search[start_date]"
 SEARCH_END_DT = "search[end_date]"
+GRADE_34 = "Grade 3/4"
 
 def get_match_count(data, match):
     pattern = re.compile(match)
@@ -194,19 +195,19 @@ class Assignr:
                     'officials': [
                         {'accepted': True, 'position': 'Referee', 'first_name': 'Homer', 'last_name': 'Simpson'}
                     ],
-                    'home_team': 'Hanover-3', 'away_team': 'Hanover-3', 'age_group': 'Grade 3/4', 'gender': 'Girls'
+                    'home_team': 'Hanover-3', 'away_team': 'Hanover-3', 'age_group': GRADE_34, 'gender': 'Girls'
                     },
                 '9:30 AM': {
                     'officials': [
                         {'accepted': True, 'position': 'Referee', 'first_name': 'Homer', 'last_name': 'Simpson'}
                     ],
-                    'home_team': 'Hanover-3', 'away_team': 'Hanover-3', 'age_group': 'Grade 3/4', 'gender': 'Boys'
+                    'home_team': 'Hanover-3', 'away_team': 'Hanover-3', 'age_group': GRADE_34, 'gender': 'Boys'
                     },
                 '11:00 AM': {
                     'officials': [
                         {'accepted': True, 'position': 'Referee', 'first_name': 'Lisa', 'last_name': 'Simpson'}
                     ],
-                    'home_team': 'Hanover-4', 'away_team': 'Hanover-4', 'age_group': 'Grade 3/4', 'gender': 'Boys'
+                    'home_team': 'Hanover-4', 'away_team': 'Hanover-4', 'age_group': GRADE_34, 'gender': 'Boys'
                     },
                 '12:30 PM': {
                     'officials': [
@@ -214,7 +215,7 @@ class Assignr:
                         {'accepted': True, 'position': 'Asst. Referee', 'first_name': 'Homer', 'last_name': 'Simpson'},
                         {'accepted': True, 'position': 'Asst. Referee', 'first_name': 'Marge', 'last_name': 'Simpson'}
                     ],
-                    'home_team': 'Hanover-4', 'away_team': 'Hanover-4', 'age_group': 'Grade 3/4', 'gender': 'Girls'
+                    'home_team': 'Hanover-4', 'away_team': 'Hanover-4', 'age_group': GRADE_34, 'gender': 'Girls'
                     }
                 }
             }
