@@ -111,13 +111,17 @@ async def create_venue(session: AsyncSession, item: VenueCreate):
         raise HTTPException(status_code=409, detail=msg)
 
     _ = await get_association_by_id(session,
-                                                id=item.association.id)
+                                    id=item.association.id)
     address = await read_create_address(session, address=item.address)
     active = True if item.active is None else item.active
     db_item = VenueModel(name=item.name, active=active,
                          address_id=address.id,
                          association_id=item.association.id)
-    session.add(db_item)
-    await session.commit()
+    try:
+        session.add(db_item)
+        await session.commit()
+    except Exception as e:
+        logger.error(f"Unable to create Venue, {item.name}: {e}")
+        await session.rollback()
     await session.refresh(db_item)
     return db_item

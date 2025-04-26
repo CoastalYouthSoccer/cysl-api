@@ -16,9 +16,12 @@ class Venue(VenueBase, table=True):
     __tablename__: str = 'venue'
     id: uuid.UUID = Field(default_factory=uuid.uuid4,
                             primary_key=True)
-    address: Optional["Address"] = Relationship(back_populates="venues")
-    association: Optional["Association"] = Relationship(back_populates="venues")
-    sub_venues: Optional["SubVenue"] = Relationship(back_populates="venue")
+    address: Optional["Address"] = Relationship(back_populates="venues",
+                                                sa_relationship_kwargs={"lazy": "selectin"})
+    association: Optional["Association"] = Relationship(back_populates="venues",
+                                                        sa_relationship_kwargs={"lazy": "selectin"})
+    sub_venues: Optional["SubVenue"] = Relationship(back_populates="venue",
+                                                    sa_relationship_kwargs={"lazy": "selectin"})
 
 
 class VenueCreate(VenueBase):
@@ -32,7 +35,8 @@ class SubVenue(SubVenueBase, table=True):
     __tablename__: str = 'sub_venue'
     id: uuid.UUID = Field(default_factory=uuid.uuid4,
                             primary_key=True)
-    venue: Venue = Relationship(back_populates="sub_venues")
+    venue: Venue = Relationship(back_populates="sub_venues",
+                                sa_relationship_kwargs={"lazy": "selectin"})
 
 
 class SubVenueCreate(SubVenueBase):

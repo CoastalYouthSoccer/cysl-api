@@ -75,7 +75,7 @@ async def test_post_venues_not_authenticated(test_app):
 @pytest.mark.asyncio(scope="session")
 async def test_create_venue_new_address(test_app):
     payload = {
-        "name": "Field of Dreams",
+        "name": "New Address",
         "active": True,
         "address": {
             "address1": "123 Home Run Ave",
@@ -108,7 +108,7 @@ async def test_create_venue_new_address(test_app):
 @pytest.mark.asyncio(scope="session")
 async def test_create_venue_existing_address(test_app):
     payload = {
-        "name": "Field of Dreams",
+        "name": "Existing Address",
         "active": True,
         "address": {
             "address1": "100 Main Street",
@@ -178,7 +178,7 @@ async def test_create_venue_already_exists(test_app):
 @pytest.mark.asyncio(scope="session")
 async def test_create_venue_invalid_association(test_app):
     payload = {
-        "name": "Field of Dreams",
+        "name": "No Association",
         "active": True,
         "address": {
             "address1": "100 Main Street",
@@ -203,7 +203,8 @@ async def test_create_venue_invalid_association(test_app):
         json=payload,
         headers={"Authorization": "Bearer test-token"}
     )
-    assert response.status_code == 201
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Association, 53aeb5c2-590d-4332-8dec-591b1c276d84, Not Found"
 
     app.dependency_overrides.clear()
 

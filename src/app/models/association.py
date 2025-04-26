@@ -15,7 +15,8 @@ class Association(AssociationBase, table=True):
     __tablename__: str = 'association'
     id: uuid.UUID = Field(default_factory=uuid.uuid4,
                             primary_key=True)
-    venues: list["Venue"] = Relationship(back_populates='association')
+    venues: list["Venue"] = Relationship(back_populates='association',
+                                         sa_relationship_kwargs={"lazy": "selectin"})
 
 
 class AssociationCreate(AssociationBase):

@@ -18,7 +18,8 @@ class Address(AddressBase, table=True):
     __tablename__: str = 'address'
     id: uuid.UUID = Field(default_factory=uuid.uuid4,
                             primary_key=True)
-    venues: list["Venue"] = Relationship(back_populates='address')
+    venues: list["Venue"] = Relationship(back_populates='address',
+                                         sa_relationship_kwargs={"lazy": "selectin"})
 
 
 class AddressCreate(AddressBase):
