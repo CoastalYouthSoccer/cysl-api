@@ -37,5 +37,6 @@ class SubVenue(SubVenueCreate):
 
 
 class AssignrVenue(Base):
+    id: int
     name: str
     city: str | None
