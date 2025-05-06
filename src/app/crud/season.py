@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import update, select
 from pydantic import UUID4
 from app.models import Season as SeasonModel
-from app.schemas import Season as SeasonCreate
+from app.schemas import Season as SeasonSchema
 
 logger = logging.getLogger(__name__)
 
@@ -45,6 +45,7 @@ async def deactivate_season(session: AsyncSession, id: UUID4):
             _ = await session.execute(
                 update(SeasonModel), [{"id": id, "active": False}]
             )
+            await session.commit()
         else:
             msg = f"Season, {id}, doesn't exist!"
             logger.info(msg)
@@ -54,7 +55,7 @@ async def deactivate_season(session: AsyncSession, id: UUID4):
         raise HTTPException(status_code=404,
                             detail=f"Failed to Delete, {id}!")
 
-async def create_season(session: AsyncSession, item: SeasonCreate):
+async def create_season(session: AsyncSession, item: SeasonSchema):
     temp = await get_season_by_name(session, name=item.name)
     if temp:
         msg = f"Season, {item.name}, already exists!"
@@ -66,6 +67,20 @@ async def create_season(session: AsyncSession, item: SeasonCreate):
                             season_length=item.season_length,
                             active=active,
                             holiday_dates=item.holiday_dates)
+    session.add(db_item)
+    await session.commit()
+    await session.refresh(db_item)
+    return db_item
+
+async def update_season(session: AsyncSession, item: SeasonSchema):
+    db_item = await get_season_by_id(session, item.id)
+    if not db_item:
+        msg = f"Season, {item.name}, doesn't exist!"
+        logger.info(msg)
+        raise HTTPException(status_code=409, detail=msg)
+
+    item_data = item.model_dump(exclude_unset=True)
+    db_item.sqlmodel_update(item_data)
     session.add(db_item)
     await session.commit()
     await session.refresh(db_item)
