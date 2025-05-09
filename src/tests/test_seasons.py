@@ -84,7 +84,7 @@ async def test_create_season_already_exists(test_app):
 
     response = await test_app.post("/seasons", json=payload,
                                    headers={"Authorization": "Bearer test-token"})
-    assert response.status_code == 400
+    assert response.status_code == 409
     assert "already exists" in response.json()["detail"]
 
     app.dependency_overrides.clear()

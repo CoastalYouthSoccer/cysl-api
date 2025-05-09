@@ -28,12 +28,14 @@ def upgrade() -> None:
     sa.Column('city', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
     sa.Column('state', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
     sa.Column('zip_code', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
+    sa.Column('active', sa.Boolean(), nullable=True),
     sa.Column('id', sa.Uuid(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('age_group',
     sa.Column('name', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
     sa.Column('game_length', sa.Integer(), nullable=False),
+    sa.Column('active', sa.Boolean(), nullable=True),
     sa.Column('id', sa.Uuid(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
@@ -45,6 +47,7 @@ def upgrade() -> None:
     )
     op.create_table('division',
     sa.Column('name', sqlmodel.sql.sqltypes.AutoString(), nullable=False),
+    sa.Column('active', sa.Boolean(), nullable=True),
     sa.Column('id', sa.Uuid(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )

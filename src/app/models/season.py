@@ -3,15 +3,14 @@ import uuid
 
 from typing import Optional
 
-from sqlmodel import SQLModel, Field
+from sqlmodel import Field
+from .common import SQLNameBase
 
 
-class SeasonBase(SQLModel):
-    name: str
+class SeasonBase(SQLNameBase):
     start_dt: date
     season_length: int  # Length of the season in weeks
     holiday_dates: Optional[str] = None
-    active: Optional[bool] = True
 
 
 class Season(SeasonBase, table=True):

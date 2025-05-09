@@ -1,9 +1,9 @@
 import uuid
 
-from sqlmodel import SQLModel, Field
+from sqlmodel import Field
+from .common import SQLNameBase
 
-class AgeGroupBase(SQLModel):
-    name: str
+class AgeGroupBase(SQLNameBase):
     game_length:int
 
 

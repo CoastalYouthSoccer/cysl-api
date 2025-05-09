@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import BaseModel, UUID4
 
 
@@ -6,4 +8,4 @@ class Base(BaseModel):
 
 
 class BaseCreate(BaseModel):
-    pass
+    active: Optional[bool]  = True

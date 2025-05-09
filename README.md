@@ -83,3 +83,7 @@ CREATE DATABASE [IF NOT EXISTS] test_database;
 CREATE USER 'testuser'@'localhost' IDENTIFIED BY 'testpassword';
 GRANT ALL ON test_database.* TO 'testuser'@'localhost';
 ```
+
+### Access Control
+
+Endpoints require read, write, or delete permission to access. Some endpoints also look at the user's role: coach, referee, etc, to restrict the data returned as well.

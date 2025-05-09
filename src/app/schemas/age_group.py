@@ -9,3 +9,4 @@ class AgeGroup(Base):
 
     class Config:
         from_attributes = True
+

@@ -1,11 +1,11 @@
 import uuid
 
-from sqlmodel import SQLModel, Field
+from sqlmodel import Field
+from .common import SQLNameBase
 
 
-class DivisionBase(SQLModel):
-    name: str
-    active: bool
+class DivisionBase(SQLNameBase):
+    pass
 
 
 class Division(DivisionBase, table=True):

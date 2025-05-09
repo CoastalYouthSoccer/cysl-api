@@ -5,13 +5,12 @@ from celery import Celery
 import csv
 from sqlalchemy import select
 from contextlib import asynccontextmanager
-from sqlmodel import SQLModel, create_engine, Session
+from sqlmodel import create_engine, Session
 from app.models.game import Game
 from app.models.season import Season
 from app.models.age_group import AgeGroup
 from app.models.division import Division
-from app.models.venue import Venue
-from app.models.sub_venue import SubVenue
+from app.models.venue_sub_venue import Venue, SubVenue
 from app.config import get_settings
 
 logger = logging.getLogger(__name__)

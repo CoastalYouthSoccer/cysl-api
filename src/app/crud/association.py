@@ -58,7 +58,7 @@ async def create_association(session: AsyncSession, item: AssociationCreate):
     if temp:
         msg = f"Association, {item.name}, already exists!"
         logger.info(msg)
-        raise HTTPException(status_code=400, detail=msg)
+        raise HTTPException(status_code=409, detail=msg)
 
     active = True if item.active is None else item.active
     db_item = AssociationModel(name=item.name, active=active)
