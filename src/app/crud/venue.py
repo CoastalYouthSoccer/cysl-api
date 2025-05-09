@@ -8,6 +8,7 @@ from sqlalchemy.orm import selectinload
 from pydantic import UUID4
 from app.models import Venue as VenueModel
 from app.models import Association as AssociationModel
+from app.models import Address as AddressModel
 from app.schemas import VenueCreate, Venue
 from .address import read_create_address
 from .association import get_association_by_id
@@ -125,3 +126,36 @@ async def create_venue(session: AsyncSession, item: VenueCreate):
         await session.rollback()
     await session.refresh(db_item)
     return db_item
+
+async def update_venue(session: AsyncSession, item: Venue):
+    venue = await session.get(VenueModel, item.id)
+    if not venue:
+        msg = f"Venue not found: {item.name}"
+        logger.warning(msg)
+        raise HTTPException(status_code=404, detail=msg)
+    
+    if item.name is not None:
+        venue.name = item.name
+
+    if item.address:
+        address_data = item.address.dict(exclude_unset=True)
+        address_id = address_data.get("id")
+
+        address = await session.get(AddressModel, address_id) if address_id else None
+
+        if address:
+            for field, value in address_data.items():
+                if field != "id":
+                    setattr(address, field, value)
+        else:
+            new_address = AddressModel(**address_data)
+            session.add(new_address)
+            await session.flush() 
+            venue.address_id = new_address.id
+        if address:
+            venue.address_id = address.id
+
+    session.add(venue)
+    await session.commit()
+    await session.refresh(venue)
+    return venue

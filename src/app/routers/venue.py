@@ -5,7 +5,8 @@ from sqlalchemy.orm import Session
 from pydantic import UUID4
 from app.database import get_session
 from app.crud import (get_venues,deactivate_venue,
-                      create_venue, get_venue_by_id)
+                      create_venue, get_venue_by_id,
+                      update_venue)
 from app.schemas import (Venue, VenueCreate)
 from app.dependencies import verify_scopes
 
@@ -29,10 +30,15 @@ async def read_venues(
                             association=association,
                             association_id=association_id)
 
-@router.post("/venues", response_model=Venue, status_code=201)
+@router.post("/venue", response_model=Venue, status_code=201)
 async def new_venue(item: VenueCreate, db: Session=Depends(get_session),
                _: str = Depends(verify_write_venues)):
     return await create_venue(db, item=item)
+
+@router.patch("/venue", response_model=Venue, status_code=201)
+async def change_venue(item: Venue, db: Session=Depends(get_session),
+               _: str = Depends(verify_write_venues)):
+    return await update_venue(db, item=item)
 
 @router.delete("/venue/{id}", status_code=204)
 async def delete_venue(id: UUID4, db: Session=Depends(get_session),

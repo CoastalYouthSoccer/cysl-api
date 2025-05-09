@@ -5,6 +5,6 @@ from .association import (Association, AssociationCreate) #noqa
 from .division import (Division, DivisionCreate) #noqa
 from .game import Game #noqa
 from .venue_sub_venue import (Venue, VenueCreate, SubVenue, SubVenueCreate,
-                              AssignrVenue) #noqa
+                              AssignrVenue, SubVenueUpdate) #noqa
 from .misconduct import (Misconduct, MisconductCreate) #noqa
 from .misc import (RefereeAssignment, VenueGame, GameTimes, VenueSchedule) #noqa
