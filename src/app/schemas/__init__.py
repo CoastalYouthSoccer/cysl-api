@@ -8,3 +8,4 @@ from .venue_sub_venue import (Venue, VenueCreate, SubVenue, SubVenueCreate,
                               AssignrVenue, SubVenueUpdate) #noqa
 from .misconduct import (Misconduct, MisconductCreate) #noqa
 from .misc import (RefereeAssignment, VenueGame, GameTimes, VenueSchedule) #noqa
+from .user import (User, Role) #noqa
