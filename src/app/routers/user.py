@@ -13,12 +13,12 @@ router = APIRouter()
 
 @router.get("/users", response_model=list[User])
 async def read_users(
-    skip: int=0,
-    limit: int=100,
+    page: int=0,
+    limit: int=50,
     given_name: Optional[str]=None,
     family_name: Optional[str]=None,
     _: str = Depends(verify_read_users)):
-    return await get_users(skip=skip, limit=limit, given_name=given_name,
+    return await get_users(page=page, limit=limit, given_name=given_name,
                            family_name=family_name)
 
 @router.patch("/user", response_model=User, status_code=201)

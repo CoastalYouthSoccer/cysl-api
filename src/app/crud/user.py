@@ -56,7 +56,7 @@ def parse_auth0_user(auth0_data: dict) -> User:
         associations=associations,
     )
 
-async def get_users(skip: int=0, limit: int=100, given_name: str=None,
+async def get_users(page: int=0, limit: int=50, given_name: str=None,
                     family_name: str=None):
     query = None
     auth0 = get_auth0()
@@ -67,7 +67,7 @@ async def get_users(skip: int=0, limit: int=100, given_name: str=None,
         ] if part
     )
     if query:
-        users = auth0.users.list(q=query)["users"]
+        users = auth0.users.list(q=query,per_page=limit, page=page)["users"]
     else:
         users = auth0.users.list()["users"]
 
