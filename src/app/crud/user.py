@@ -1,7 +1,10 @@
 import logging
 
 from fastapi import HTTPException
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import update, select
 from app.schemas import (User, Role)
+from app.models import Auth0Role
 from auth0.authentication import GetToken
 from auth0.management import Auth0
 from app.config import get_settings
@@ -111,3 +114,7 @@ async def deactivate_user(id: str):
     role_ids = [role['id'] for role in roles['roles']]
     if role_ids:
         _ = auth0.users.remove_roles(id, role_ids)
+
+async def get_roles(session: AsyncSession):
+    result = await session.execute(select(Auth0Role))
+    return result.scalars().all()

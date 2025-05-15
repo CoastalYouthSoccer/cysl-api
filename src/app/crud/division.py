@@ -6,6 +6,7 @@ from sqlalchemy import update, select
 from pydantic import UUID4
 from app.models import Division as DivisionModel
 from app.schemas import DivisionCreate
+
 logger = logging.getLogger(__name__)
 
 async def get_divisions(session: AsyncSession, skip: int=0, limit: int=100,

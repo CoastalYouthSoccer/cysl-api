@@ -1,8 +1,11 @@
 from typing import Optional
 from fastapi import APIRouter, Depends
+from sqlmodel.ext.asyncio.session import AsyncSession
+from sqlalchemy.orm import Session
+from app.database import get_session
 from app.crud import (get_users, get_user_by_id,
-                      update_user, deactivate_user)
-from app.schemas import User
+                      update_user, deactivate_user, get_roles)
+from app.schemas import User, Role
 from app.dependencies import verify_scopes
 
 verify_write_users = verify_scopes(["write:users"])
@@ -32,3 +35,9 @@ async def delete_user(id: str, _: str = Depends(verify_delete_users)):
 @router.get("/user/{id}", response_model=User)
 async def get_user_id(id: str, _: str = Depends(verify_read_users)):
     return await get_user_by_id(id=id)
+
+@router.get("/roles", response_model=list[Role])
+async def get_auth0_roles(
+    db: AsyncSession=Depends(get_session),
+    _: str = Depends(verify_read_users)):
+    return await get_roles(db)
