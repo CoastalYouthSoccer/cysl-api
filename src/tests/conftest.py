@@ -20,7 +20,6 @@ from sqlalchemy import insert, MetaData
 from fastapi.testclient import TestClient
 
 from app.models import (Season, Misconduct, Association)
-from app.database import async_engine
 
 load_dotenv(dotenv_path=".test.env", override=True)
 
@@ -31,6 +30,11 @@ seed_info = {
     "season": Season, "misconduct": Misconduct,
     "association": Association
 }
+
+@pytest.fixture
+async def db_session():
+    async for session in get_session():
+        yield session
 
 @pytest.fixture(scope='session')
 def test_client():

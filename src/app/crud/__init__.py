@@ -21,3 +21,5 @@ from .sub_venue import (create_sub_venue, get_sub_venues,
 from .age_group import get_age_groups #noqa
 from .game import (get_games, create_game, update_game, get_game,
                    delete_game) #noqa
+from .user import (get_users, get_user_by_id, update_user,
+                   deactivate_user, get_roles) #noqa

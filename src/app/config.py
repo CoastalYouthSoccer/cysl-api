@@ -6,6 +6,10 @@ class Settings(BaseSettings):
     auth0_domain: str
     auth0_api_audience: str
     auth0_issuer: str
+    management_auth0_domain: str
+    management_auth0_client_id: str
+    management_auth0_client_secret: str
+    auth0_issuer: str
     auth0_algorithms: str = "RS256"
     database_url: str
     celery_database_url: str
