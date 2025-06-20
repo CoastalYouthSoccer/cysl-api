@@ -10,7 +10,8 @@ from typing import Dict
 from app.schemas import AssignrVenue, VenueGame
 from app.assignr.assignr import Assignr
 from app.routers import (age_group, association, misconduct, season, game,
-                         division, venue, sub_venue, user)
+                         division, venue, sub_venue, user, person,
+                         venue_rule)
 from app.config import get_settings
 from app.dependencies import auth
 
@@ -81,3 +82,9 @@ app.include_router(sub_venue.router)
 
 # user endpoints
 app.include_router(user.router)
+
+# person endpoints
+app.include_router(person.router)
+
+# venue-rules endpoints
+app.include_router(venue_rule.router)

@@ -1,14 +1,13 @@
 from datetime import time
 import uuid
 
-from typing import Optional
-
 from sqlmodel import SQLModel, Field, Relationship
 from .common import SQLNameBase
 
 
 class AssociationBase(SQLNameBase):
-    pass
+    president: uuid.UUID = Field(default=None, foreign_key="person.id")
+    secretary: uuid.UUID = Field(default=None, foreign_key="person.id")
 
 
 class Association(AssociationBase, table=True):

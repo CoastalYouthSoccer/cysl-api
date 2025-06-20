@@ -23,3 +23,9 @@ from .game import (get_games, create_game, update_game, get_game,
                    delete_game) #noqa
 from .user import (get_users, get_user_by_id, update_user,
                    deactivate_user, get_roles) #noqa
+from .person import (get_person_by_email, get_person_by_id, get_person_by_name,
+                     create_person, update_person, get_persons,
+                     deactivate_person) #noqa
+from .venue_rule import (get_venue_rules, create_venue_rule,
+                         update_venue_rule, deactivate_venue_rule,
+                         get_venue_rule_by_id) #noqa
