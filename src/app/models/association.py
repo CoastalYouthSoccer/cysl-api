@@ -8,6 +8,8 @@ from .common import SQLNameBase
 class AssociationBase(SQLNameBase):
     president: uuid.UUID = Field(default=None, foreign_key="person.id")
     secretary: uuid.UUID = Field(default=None, foreign_key="person.id")
+    assignor: uuid.UUID = Field(default=None, foreign_key="person.id")
+    registrar: uuid.UUID = Field(default=None, foreign_key="person.id")
 
 
 class Association(AssociationBase, table=True):

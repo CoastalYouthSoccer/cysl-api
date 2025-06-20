@@ -5,7 +5,8 @@ from .misconduct import (create_misconduct, get_misconducts) #noqa
 from .association import (create_association, get_associations,
                           deactivate_association,
                           get_association_by_name,
-                          get_association_by_id) #noqa
+                          get_association_by_id,
+                          update_association) #noqa
 from .division import (create_division, get_divisions,
                           deactivate_division,
                           get_division_by_name, get_division_by_id) #noqa
