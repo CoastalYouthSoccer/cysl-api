@@ -20,9 +20,10 @@ async def read_venue_rules(
     db: AsyncSession=Depends(get_session),
     skip: int=0,
     limit: int=100,
-    name: Optional[str]=None,
+    association: Optional[UUID4]=None,
     _: str = Depends(verify_read_venue_rules)):
-    return await get_venue_rules(db, skip=skip, limit=limit, name=name)
+    return await get_venue_rules(db, skip=skip, limit=limit,
+                                 association_id=association)
 
 @router.post("/venue_rule", response_model=VenueRule, status_code=201)
 async def new_venue_rule(item: VenueRuleCreate, db: Session=Depends(get_session),

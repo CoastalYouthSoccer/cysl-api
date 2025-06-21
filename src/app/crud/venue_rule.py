@@ -2,14 +2,18 @@ import logging
 
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import update, select, and_
+from sqlalchemy import update, select
 from pydantic import UUID4
 from app.models import VenueRule as VenueRuleModel
 from app.schemas import VenueRuleCreate, VenueRule
 
 logger = logging.getLogger(__name__)
 
-async def get_venue_rules(session: AsyncSession, skip: int=0, limit: int=100):
+async def get_venue_rules(session: AsyncSession, association_id: UUID4=None,
+                          skip: int=0, limit: int=100):
+    if association_id:
+        return await get_venue_rule_by_association(session, association_id)
+
     result = await session.execute(select(VenueRuleModel).where(VenueRuleModel.active == True). \
         limit(limit=limit).offset(offset=skip))
     return result.scalars().all()
@@ -21,6 +25,12 @@ async def get_venue_rule_by_id(session: AsyncSession, id: UUID4):
         logger.debug(msg)
         raise HTTPException(status_code=404, detail=msg)
     return result
+
+async def get_venue_rule_by_association(session: AsyncSession, id: UUID4):
+    result = await session.execute(select(VenueRuleModel). \
+                                   where(VenueRuleModel.active == True,
+                                         VenueRuleModel.association_id == id))
+    return result.scalars().all()
 
 async def deactivate_venue_rule(session: AsyncSession, id: UUID4):
     try:
