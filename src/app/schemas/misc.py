@@ -2,6 +2,18 @@ from typing import Optional, Dict
 from pydantic import BaseModel
 
 
+class GameReport(BaseModel):
+    author: Optional[str] = None
+    misconducts: Optional[bool] = None
+    ejections: Optional[bool] = None
+    no_show: Optional[bool] = None
+    home_score: Optional[int] = None
+    away_score: Optional[int] = None
+
+    class Config:
+        from_attributes = True
+
+
 class RefereeAssignment(BaseModel):
     accepted: bool
     position: Optional[str]
@@ -18,6 +30,7 @@ class VenueGame(BaseModel):
     away_team: str
     age_group: str
     gender: str
+    report: Optional[GameReport] = None
 
     class Config:
         from_attributes = True
