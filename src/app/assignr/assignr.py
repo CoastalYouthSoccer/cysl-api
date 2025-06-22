@@ -67,15 +67,18 @@ def get_referees_by_assignments(payload):
         })
     return referees
 
-def get_game_venue_data(item, referees, game_data):
+def get_game_venue_data(item, referees, game_reports, game_data):
     sub_venue = item['subvenue'] if 'subvenue' in item else 'Missing Field Name'
+    game_report = game_reports[item['id']] if item['id'] in game_reports else {}
+
     if sub_venue in game_data:
         game_data[sub_venue][item['localized_time']] = {
             'officials': referees,
             'home_team': item["home_team"],
             'away_team': item["away_team"],
             'age_group': item["age_group"],
-            'gender': item["gender"]
+            'gender': item["gender"],
+            'report': game_report
         }
     else:
         game_data[sub_venue] = {
@@ -84,7 +87,8 @@ def get_game_venue_data(item, referees, game_data):
                 'home_team': item["home_team"],
                 'away_team': item["away_team"],
                 'age_group': item["age_group"],
-                'gender': item["gender"]
+                'gender': item["gender"],
+                'report': game_report
             }
         }
     
@@ -143,6 +147,46 @@ class Assignr:
             response = requests.get(f"{self.base_url}{end_point}", headers=headers, params=params)
         return response.status_code, response.json()
 
+    def get_games_reports(self, start_dt, end_dt):
+        FORM_ID = 1002
+        more_rows = True
+        results = {}
+        page_nbr = 1
+
+        params = {
+            SEARCH_START_DT: start_dt,
+            SEARCH_END_DT: end_dt
+        }
+
+        while more_rows:
+            params['page'] = page_nbr
+            status_code, response = self.get_requests(f'form/templates/{FORM_ID}/submissions',
+                                                      params=params)
+            if status_code != 200:
+                logging.error(f'Failed to get game_reports: {status_code}')
+                more_rows = False
+                return results
+
+            try:
+                total_pages = response['page']['pages']
+                for item in response['_embedded']['form_submissions']:
+                    results[item['_embedded']['game']['id']] = {
+                        'author': item['author_name'],
+                        'misconducts': item['has_misconduct'],
+                        'ejections': item['has_ejections'],
+                        'no_show': item['has_no_show'],
+                        'home_score': item['home_team_score'],
+                        'away_score': item['away_team_score']
+                    }
+            except KeyError as ke:
+                logging.error(f"Key: {ke}, missing from Game response")
+
+            page_nbr += 1
+            if page_nbr > total_pages:
+                more_rows = False
+
+        return results
+
     def get_venues(self):
         more_rows = True
         venues = []
@@ -179,48 +223,9 @@ class Assignr:
                 more_rows = False
 
         return venues
-
-    def get_games_venue_test(self):
-        return {
-            'Field A': {
-                '11:00 AM': {
-                    'officials': [
-                        {'accepted': True, 'position': 'Referee', 'first_name': 'Marge', 'last_name': 'Simpson'}
-                    ],
-                    'home_team': 'Hanover-1', 'away_team': 'Hanover-1', 'age_group': 'Grade 1/2', 'gender': 'Boys'
-                    }
-                },
-            'Field Five': {
-                '8:00 AM': {
-                    'officials': [
-                        {'accepted': True, 'position': 'Referee', 'first_name': 'Homer', 'last_name': 'Simpson'}
-                    ],
-                    'home_team': 'Hanover-3', 'away_team': 'Hanover-3', 'age_group': GRADE_34, 'gender': 'Girls'
-                    },
-                '9:30 AM': {
-                    'officials': [
-                        {'accepted': True, 'position': 'Referee', 'first_name': 'Homer', 'last_name': 'Simpson'}
-                    ],
-                    'home_team': 'Hanover-3', 'away_team': 'Hanover-3', 'age_group': GRADE_34, 'gender': 'Boys'
-                    },
-                '11:00 AM': {
-                    'officials': [
-                        {'accepted': True, 'position': 'Referee', 'first_name': 'Lisa', 'last_name': 'Simpson'}
-                    ],
-                    'home_team': 'Hanover-4', 'away_team': 'Hanover-4', 'age_group': GRADE_34, 'gender': 'Boys'
-                    },
-                '12:30 PM': {
-                    'officials': [
-                        {'accepted': True, 'position': 'Referee', 'first_name': 'Lisa', 'last_name': 'Simpson'},
-                        {'accepted': True, 'position': 'Asst. Referee', 'first_name': 'Homer', 'last_name': 'Simpson'},
-                        {'accepted': True, 'position': 'Asst. Referee', 'first_name': 'Marge', 'last_name': 'Simpson'}
-                    ],
-                    'home_team': 'Hanover-4', 'away_team': 'Hanover-4', 'age_group': GRADE_34, 'gender': 'Girls'
-                    }
-                }
-            }
   
     def get_games_venue(self, start_dt, end_dt, venue):
+        game_reports = self.get_games_reports(start_dt, end_dt)
         more_rows = True
         results = {}
         page_nbr = 1
@@ -248,7 +253,7 @@ class Assignr:
                     sub_items = item['_embedded']
                     if sub_items['venue']['name'] == venue:
                         referees = get_referees_by_assignments(sub_items['assignments'])
-                        results = get_game_venue_data(item, referees, results)
+                        results = get_game_venue_data(item, referees, game_reports, results)
             except KeyError as ke:
                 logging.error(f"Key: {ke}, missing from Game response")
 
