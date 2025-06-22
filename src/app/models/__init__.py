@@ -8,4 +8,6 @@ from .division import (Division, DivisionCreate) #noqa
 from .game import (Game, GameCreate) #noqa
 from .venue_sub_venue import (Venue, VenueBase,
                               SubVenue, SubVenueCreate) #noqa
+from .person import (Person, PersonCreate) #noqa
+from .venue_rule import (VenueRule, VenueRuleCreate) #noqa
 from .auth0 import Auth0Role #noqa

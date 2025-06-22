@@ -5,7 +5,8 @@ from sqlalchemy.orm import Session
 from pydantic import UUID4
 from app.database import get_session
 from app.crud import (get_associations,deactivate_association,
-                      create_association, get_association_by_id)
+                      create_association, get_association_by_id,
+                      update_association)
 from app.schemas import (Association, AssociationCreate)
 from app.dependencies import verify_scopes
 
@@ -39,3 +40,8 @@ async def delete_association(id: UUID4, db: Session=Depends(get_session),
 async def get_association_id(id: UUID4, db: Session=Depends(get_session),
                              _: str = Depends(verify_read_associations)):
     return await get_association_by_id(db, id)
+
+@router.patch("/association", response_model=Association, status_code=201)
+async def change_venue_rule(item: Association, db: Session=Depends(get_session),
+               _: str = Depends(verify_write_associations)):
+    return await update_association(db, item=item)
