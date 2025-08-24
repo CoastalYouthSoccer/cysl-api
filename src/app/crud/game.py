@@ -2,10 +2,11 @@ import logging
 
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.exc import ResourceClosedError
 from sqlalchemy import update, select, delete
+from sqlalchemy.orm import selectinload
 from pydantic import UUID4
-from app.models import Game as GameModel
+from app.models import (Game as GameModel,
+                        SubVenue as SubVenueModel)
 from app.schemas import Game  
 logger = logging.getLogger(__name__)
 
@@ -19,9 +20,19 @@ async def get_game(session: AsyncSession, id: UUID4):
 
     return game
 
-async def get_games(session: AsyncSession, skip: int=0, limit: int=100):
-    result = await session.execute(select(GameModel). \
-        limit(limit=limit).offset(offset=skip))
+async def get_games(session: AsyncSession, season_id: UUID4=None, skip: int=0,
+                    limit: int=100):
+    if season_id:
+        result = await session.execute(select(GameModel). \
+            options(selectinload(GameModel.sub_venue). \
+                     selectinload(SubVenueModel.venue)). \
+            where(GameModel.season_id == season_id). \
+            limit(limit=limit).offset(offset=skip))
+    else:
+        result = await session.execute(select(GameModel). \
+            options(selectinload(GameModel.sub_venue). \
+                    selectinload(SubVenueModel.venue)). \
+            limit(limit=limit).offset(offset=skip))
     return result.scalars().all()
 
 async def check_for_existing_game(session: AsyncSession, item: Game):

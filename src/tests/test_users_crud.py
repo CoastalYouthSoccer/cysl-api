@@ -53,7 +53,6 @@ async def test_read_users(mock_get_auth0):
     mock_get_auth0.return_value = mock_auth0
 
     result = await get_users()
-    print(result)
 
 @pytest.mark.asyncio
 @patch("app.crud.user.get_auth0")
@@ -64,7 +63,6 @@ async def test_get_user_id(mock_get_auth0):
     ]
     mock_get_auth0.return_value = mock_auth0
     result = await get_user_by_id("/user/google-oauth2|123")
-    print(result)
 
 
 @pytest.mark.asyncio
@@ -90,7 +88,6 @@ async def test_change_user(mock_get_auth0):
         "roles": [],
         "associations": ["Hanover"]
     })
-    print(result)
 
 @pytest.mark.asyncio
 @patch("app.crud.user.get_auth0")

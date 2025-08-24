@@ -1,10 +1,11 @@
 import uuid
 
-from typing import Optional
+from typing import Optional, List
 from sqlmodel import Field, Relationship
 from .common import SQLNameBase
 from .association import Association
 from .address import Address
+from .game import Game
 
 
 class VenueBase(SQLNameBase):
@@ -37,6 +38,7 @@ class SubVenue(SubVenueBase, table=True):
                             primary_key=True)
     venue: Venue = Relationship(back_populates="sub_venues",
                                 sa_relationship_kwargs={"lazy": "selectin"})
+    games: List[Game] = Relationship(back_populates="sub_venue")
 
 
 class SubVenueCreate(SubVenueBase):

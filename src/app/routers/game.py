@@ -43,5 +43,4 @@ async def get_game_id(id: UUID4, db: Session=Depends(get_session)):
 
 @router.post("/uploadgames/")
 async def create_upload_file(file: UploadFile):
-    print(file.filename)
     return {"filename": file.filename}
