@@ -26,7 +26,7 @@ async def read_associations(
     ):
     return await get_associations(db, skip=skip, limit=limit, name=name)
 
-@router.post("/associations", response_model=Association, status_code=201)
+@router.post("/association", response_model=Association, status_code=201)
 async def new_association(item: AssociationCreate, db: Session=Depends(get_session),
                _: str = Depends(verify_write_associations)):
     return await create_association(db, item=item)

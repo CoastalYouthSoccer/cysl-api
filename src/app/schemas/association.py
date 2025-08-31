@@ -1,15 +1,16 @@
 from typing import Optional
-from pydantic import StringConstraints, UUID4
+from pydantic import StringConstraints, Field
 from typing_extensions import Annotated
-from .base import Base, BaseCreate
+from uuid import UUID
+from .base import BaseCreate
 
 
 class AssociationCreate(BaseCreate):
     name: Annotated[str, StringConstraints(max_length=100)]
-    president: Optional[UUID4]
-    secretary: Optional[UUID4]
-    assignor: Optional[UUID4]
-    registrar: Optional[UUID4]
+    president: Optional[UUID] = Field(default=None)
+    secretary: Optional[UUID] = Field(default=None)
+    assignor: Optional[UUID] = Field(default=None)
+    registrar: Optional[UUID] = Field(default=None)
     active: Optional[bool] = True
 
     class Config:
@@ -17,4 +18,4 @@ class AssociationCreate(BaseCreate):
 
 
 class Association(AssociationCreate):
-    id: UUID4
+    id: UUID

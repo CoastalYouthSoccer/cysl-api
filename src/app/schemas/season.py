@@ -1,7 +1,7 @@
 from datetime import date
-from typing import Optional
-from pydantic import StringConstraints, UUID4
+from pydantic import StringConstraints
 from typing_extensions import Annotated
+from uuid import UUID
 from .base import BaseCreate
 
 
@@ -16,7 +16,7 @@ class SeasonCreate(BaseCreate):
 
 
 class Season(SeasonCreate):
-    id: UUID4
+    id: UUID
 
     class Config:
         from_attributes = True

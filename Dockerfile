@@ -24,5 +24,4 @@ ENV OTEL_LOGS_EXPORTER=otlp
 RUN chown -R fastapi /app 
 USER fastapi
 
-ENTRYPOINT ["opentelemetry-instrument", "uvicorn" , "main:app", "--host", "0.0.0.0", \
-            "--port", "8000", "--reload"]
+ENTRYPOINT ["uvicorn" , "main:app", "--host", "0.0.0.0", "--port", "8000"]

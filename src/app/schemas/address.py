@@ -1,5 +1,5 @@
 from typing import Optional
-from pydantic import UUID4
+from uuid import UUID
 from .base import BaseCreate
 
 
@@ -16,4 +16,4 @@ class AddressCreate(BaseCreate):
 
 
 class Address(AddressCreate):
-    id: UUID4
+    id: UUID
