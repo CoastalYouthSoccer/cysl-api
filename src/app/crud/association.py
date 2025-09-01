@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import update, select
 from pydantic import UUID4
 from app.models import Association as AssociationModel
-from app.schemas import AssociationCreate
+from app.schemas import AssociationCreate, Association
 logger = logging.getLogger(__name__)
 
 async def get_associations(session: AsyncSession, skip: int=0, limit: int=100,
@@ -61,8 +61,30 @@ async def create_association(session: AsyncSession, item: AssociationCreate):
         raise HTTPException(status_code=409, detail=msg)
 
     active = True if item.active is None else item.active
-    db_item = AssociationModel(name=item.name, active=active)
+    db_item = AssociationModel(name=item.name, active=active,
+                               registrar=item.registrar,
+                               assignor=item.assignor,
+                               president=item.president,
+                               secretary=item.secretary)
     session.add(db_item)
     await session.commit()
     await session.refresh(db_item)
     return db_item
+
+async def update_association(session: AsyncSession, item: Association):
+    association = await session.get(AssociationModel, item.id)
+    if not association:
+        msg = f"Association not found: {item.name}"
+        logger.warning(msg)
+        raise HTTPException(status_code=404, detail=msg)
+    
+    association.name = item.name
+    association.assignor = item.assignor
+    association.president = item.president
+    association.secretary = item.secretary
+    association.registrar = item.registrar
+
+    session.add(association)
+    await session.commit()
+    await session.refresh(association)
+    return association

@@ -1,5 +1,6 @@
 from typing import Optional
-from pydantic import StringConstraints, UUID4
+from pydantic import StringConstraints
+from uuid import UUID
 from typing_extensions import Annotated
 from .base import BaseCreate
 
@@ -13,4 +14,4 @@ class DivisionCreate(BaseCreate):
 
 
 class Division(DivisionCreate):
-    id: UUID4
+    id: UUID

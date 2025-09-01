@@ -1,8 +1,9 @@
 from enum import Enum
 from datetime import datetime
 from typing import Optional
-from pydantic import UUID4, BaseModel
-from .base import Base, BaseCreate
+from pydantic import BaseModel, Field
+from uuid import UUID, uuid4
+from .venue_sub_venue import Venue, SubVenue
 
 class GameStatus(Enum):
     """ Level Type """
@@ -15,13 +16,15 @@ class GameStatus(Enum):
 
 
 class Game(BaseModel):
-    season_id: UUID4
-    division_id: UUID4
-    age_group_id: UUID4
+    id: UUID
+    season_id: UUID
+    division_id: UUID
+    age_group_id: UUID
     gender_boy: bool
     home_team: str
     away_team: str
-    sub_venue_id: Optional[UUID4] = None
+    venue_id: Optional[UUID] = Field(default=None)
+    sub_venue_id: Optional[UUID] = Field(default=None)
     game_dt: Optional[datetime] = None
     home_score: Optional[int] = None
     away_score: Optional[int] = None

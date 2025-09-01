@@ -25,6 +25,8 @@ class Settings(BaseSettings):
     otel_insecure: bool = False
     otel_exporter_oltp_endpoint: str
     otel_grafana_token: str
+    db_encryption_key: str
+    hmac_secret: str
     model_config = SettingsConfigDict(env_file=environ.get("ENV_FILE", ".env"),
                                       extra="ignore")
 
