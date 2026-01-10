@@ -6,6 +6,7 @@ on:
       - 'src/**'
       - 'Dockerfile'
       - '.dockerignore'
+      - '.github/workflows/build-deploy.yml'
     branches:
       - '**'
       - '!releases/**'
