@@ -1,4 +1,4 @@
-from pydantic import UUID4, EmailStr
+from pydantic import UUID4, EmailStr, ConfigDict
 from .base import BaseCreate
 
 
@@ -7,12 +7,14 @@ class PersonCreate(BaseCreate):
     last_name: str
     email: EmailStr
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(
+        from_attributes=True
+    )
 
 
 class Person(PersonCreate):
     id: UUID4
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(
+        from_attributes=True
+    )

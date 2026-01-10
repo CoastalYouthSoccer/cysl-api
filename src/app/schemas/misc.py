@@ -1,5 +1,5 @@
 from typing import Optional, Dict
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class GameReport(BaseModel):
@@ -10,8 +10,9 @@ class GameReport(BaseModel):
     home_score: Optional[int] = None
     away_score: Optional[int] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(
+        from_attributes=True
+    )
 
 
 class RefereeAssignment(BaseModel):
@@ -20,8 +21,9 @@ class RefereeAssignment(BaseModel):
     first_name: Optional[str]
     last_name: Optional[str]
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(
+        from_attributes=True
+    )
 
 
 class VenueGame(BaseModel):
@@ -32,8 +34,9 @@ class VenueGame(BaseModel):
     gender: str
     report: Optional[GameReport] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(
+        from_attributes=True
+    )
 
 
 class GameTimes(BaseModel):

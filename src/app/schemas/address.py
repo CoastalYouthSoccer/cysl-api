@@ -1,6 +1,7 @@
 from typing import Optional
 from uuid import UUID
 from .base import BaseCreate
+from pydantic import ConfigDict
 
 
 class AddressCreate(BaseCreate):
@@ -11,8 +12,9 @@ class AddressCreate(BaseCreate):
     zip_code: str
     active: Optional[bool] = True
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(
+        from_attributes=True
+    )
 
 
 class Address(AddressCreate):

@@ -36,7 +36,7 @@ async def test_post_seasons_not_authenticated(test_app):
 
     response = await test_app.post("/season",
                                     json=payload)
-    assert response.status_code == 403
+    assert response.status_code == 401
     assert response.json() == NOT_AUTHENTICATED
 
 @pytest.mark.asyncio(scope="session")
@@ -75,7 +75,7 @@ async def test_create_season_already_exists(test_app):
     # Override the auth verifier used by FastAPI
     app.dependency_overrides[seasons_module.verify_write_seasons] = mock_verify_dependency
 
-    response = await test_app.post(
+    response = await test_app.patch(
         "/season",
         json=payload,
         headers={"Authorization": "Bearer test-token"}

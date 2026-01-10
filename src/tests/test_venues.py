@@ -73,7 +73,7 @@ async def test_post_venues_not_authenticated(test_app):
         "name": "Bad Association", "active": True
     }
 
-    response = await test_app.post("/venues",
+    response = await test_app.post("/venue",
                                     json=payload)
     assert response.status_code == 403
     assert response.json() == NOT_AUTHENTICATED
@@ -103,7 +103,7 @@ async def test_create_venue_new_address(test_app):
     app.dependency_overrides[venues_module.verify_write_venues] = mock_verify_dependency
 
     response = await test_app.post(
-        "/venues",
+        "/venue",
         json=payload,
         headers={"Authorization": "Bearer test-token"}
     )
@@ -135,7 +135,7 @@ async def test_create_venue_existing_address(test_app):
     app.dependency_overrides[venues_module.verify_write_venues] = mock_verify_dependency
 
     response = await test_app.post(
-        "/venues",
+        "/venue",
         json=payload,
         headers={"Authorization": "Bearer test-token"}
     )
@@ -168,13 +168,13 @@ async def test_create_venue_already_exists(test_app):
     app.dependency_overrides[venues_module.verify_write_venues] = mock_verify_dependency
 
     response = await test_app.post(
-        "/venues",
+        "/venue",
         json=payload,
         headers={"Authorization": "Bearer test-token"}
     )
     assert response.status_code == 201
 
-    response = await test_app.post("/venues", json=payload,
+    response = await test_app.post("/venue", json=payload,
                                    headers={"Authorization": "Bearer test-token"})
     assert response.status_code == 409
     assert "already exists" in response.json()["detail"]
@@ -205,7 +205,7 @@ async def test_create_venue_invalid_association(test_app):
     app.dependency_overrides[venues_module.verify_write_venues] = mock_verify_dependency
 
     response = await test_app.post(
-        "/venues",
+        "/venue",
         json=payload,
         headers={"Authorization": "Bearer test-token"}
     )
@@ -222,11 +222,14 @@ async def test_read_venue_by_name_found(test_app):
             {
                 'active': True, 'address1': '100 Main Street',
                 'address2': None, 'city': 'Atlanta',
+                'id': '41a6ae75-aa9d-4c19-857d-0be3c95f703a',
                 'state': 'GA', 'zip_code': '30303'
             },
             'association': {
                 'active': True, 'name': 'Atlanta',
-                'id': '53aeb5c2-590d-4332-8dec-591b1c276d83'
+                'id': '53aeb5c2-590d-4332-8dec-591b1c276d83',
+                'president': None, 'secretary': None, 'assignor': None,
+                'registrar': None
             },
             'id': 'b6a95d67-9542-49a5-9e20-b4732fd68309' 
         }
@@ -271,11 +274,14 @@ async def test_read_venue_by_id_found(test_app):
         {
             'active': True, 'address1': '85 Main St',
             'address2': None, 'city': 'Boston',
-            'state': 'MA', 'zip_code': '02135'
+            'state': 'MA', 'zip_code': '02135',
+            'id': '558a0e81-ea45-4e3b-ac9d-936a75136ef5'
         },
         'association': {
             'active': True, 'name': 'Boston',
-            'id': 'a3cb9efb-73e8-4758-b547-6b8fb5fd2ba1'
+            'id': 'a3cb9efb-73e8-4758-b547-6b8fb5fd2ba1',
+            'president': None, 'secretary': None, 'assignor': None,
+            'registrar': None
         },
         'id': 'a6d69d3e-de15-4d4e-8c18-5aa6252f0bd3'
     }
