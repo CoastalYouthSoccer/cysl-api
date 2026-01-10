@@ -85,14 +85,14 @@ async def test_create_association_already_exists(test_app):
     # Override the auth verifier used by FastAPI
     app.dependency_overrides[associations_module.verify_write_associations] = mock_verify_dependency
 
-    response = await test_app.patch(
+    response = await test_app.post(
         "/association",
         json=payload,
         headers={"Authorization": "Bearer test-token"}
     )
     assert response.status_code == 201
 
-    response = await test_app.post("/associations", json=payload,
+    response = await test_app.post("/association", json=payload,
                                    headers={"Authorization": "Bearer test-token"})
     assert response.status_code == 409
     assert "already exists" in response.json()["detail"]

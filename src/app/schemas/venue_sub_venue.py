@@ -2,7 +2,6 @@ from pydantic import StringConstraints, UUID4, ConfigDict
 from typing_extensions import Annotated
 from .base import BaseCreate, Base
 from .address import  AddressCreate
-from .association import AssociationCreate
 
 
 class VenueCreate(BaseCreate):

@@ -111,8 +111,12 @@ async def create_venue(session: AsyncSession, item: VenueCreate):
         logger.info(msg)
         raise HTTPException(status_code=409, detail=msg)
 
-    _ = await get_association_by_id(session,
+    temp = await get_association_by_id(session,
                                     id=item.association.id)
+    if not temp:
+        logger.info(msg)
+        raise HTTPException(status_code=409, detail=msg)
+    
     address = await read_create_address(session, address=item.address)
     active = True if item.active is None else item.active
     db_item = VenueModel(name=item.name, active=active,

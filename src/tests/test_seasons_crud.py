@@ -25,10 +25,10 @@ async def test_create_season(db_session):
 @pytest.mark.asyncio
 async def test_create_season_already_exists(db_session):
     season_data = SeasonCreate(
-        name="Season Exists",
-        start_dt=date(2025, 9, 1),
-        season_length=10,
-        holiday_dates="2025-10-10,2025-11-25"
+        name="Spring 2025",
+        start_dt=date(2025,4,5),
+        season_length=8,
+        holiday_dates="2025-05-24"
     )
 
     with pytest.raises(HTTPException) as exc_info:
@@ -36,7 +36,7 @@ async def test_create_season_already_exists(db_session):
 
     exception = exc_info.value
     assert exception.status_code == 409
-    assert "Season, Season Exists, already exists!" in exception.detail
+    assert "Season, Spring 2025, already exists!" in exception.detail
 
 @pytest.mark.asyncio
 async def test_get_season_by_id(db_session):
