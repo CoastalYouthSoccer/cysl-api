@@ -103,7 +103,8 @@ async def test_create_association_already_exists(test_app):
 async def test_read_association_by_name_found(test_app):
     expected_results = [{
         "id": "53aeb5c2-590d-4332-8dec-591b1c276d83", "name": "Atlanta",
-        "active": True
+        "president": None, "secretary": None, "assignor": None, 
+        "registrar": None,"active": True
     }]
 
     async def mock_verify_dependency():
@@ -142,7 +143,8 @@ async def test_read_association_by_name_not_found(test_app):
 async def test_read_association_by_id_found(test_app):
     expected_results = {
         "id": "53aeb5c2-590d-4332-8dec-591b1c276d83", "name": "Atlanta",
-        "active": True
+        "president": None, "secretary": None, "assignor": None, 
+        "registrar": None,"active": True
     }
 
     async def mock_verify_dependency():

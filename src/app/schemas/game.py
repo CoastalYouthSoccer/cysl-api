@@ -1,9 +1,8 @@
 from enum import Enum
 from datetime import datetime
 from typing import Optional
-from pydantic import BaseModel, Field
-from uuid import UUID, uuid4
-from .venue_sub_venue import Venue, SubVenue
+from pydantic import BaseModel, Field, ConfigDict
+from uuid import UUID
 
 class GameStatus(Enum):
     """ Level Type """
@@ -29,5 +28,6 @@ class Game(BaseModel):
     home_score: Optional[int] = None
     away_score: Optional[int] = None
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(
+        from_attributes=True
+    )

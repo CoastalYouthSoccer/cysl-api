@@ -18,7 +18,9 @@ async def test_read_venues(test_app):
             },
             'association': {
                 'active': True, 'name': 'Boston',
-                'id': 'a3cb9efb-73e8-4758-b547-6b8fb5fd2ba1'
+                'id': 'a3cb9efb-73e8-4758-b547-6b8fb5fd2ba1',
+                'president': None, 'secretary': None, 'assignor': None,
+                'registrar': None
             },
             'id': 'a6d69d3e-de15-4d4e-8c18-5aa6252f0bd3'
         }, {
@@ -30,7 +32,9 @@ async def test_read_venues(test_app):
             },
             'association': {
                 'active': True, 'name': 'Atlanta',
-                'id': '53aeb5c2-590d-4332-8dec-591b1c276d83'
+                'id': '53aeb5c2-590d-4332-8dec-591b1c276d83',
+                'president': None, 'secretary': None, 'assignor': None,
+                'registrar': None
             },
             'id': 'b6a95d67-9542-49a5-9e20-b4732fd68309' 
         }, {           
@@ -42,7 +46,9 @@ async def test_read_venues(test_app):
             },
             'association': {
                 'active': True, 'name': 'Boston',
-                'id': 'a3cb9efb-73e8-4758-b547-6b8fb5fd2ba1'
+                'id': 'a3cb9efb-73e8-4758-b547-6b8fb5fd2ba1',
+                'president': None, 'secretary': None, 'assignor': None,
+                'registrar': None
             },
             'id': 'ec9e8bf0-2c86-4bc9-b1eb-f52166c930ff'
         }

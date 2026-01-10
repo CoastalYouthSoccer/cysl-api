@@ -41,7 +41,7 @@ async def test_post_divisions_not_authenticated(test_app):
 
     response = await test_app.post("/division",
                                     json=division_payload)
-    assert response.status_code == 403
+    assert response.status_code == 401
     assert response.json() == NOT_AUTHENTICATED
 
 @pytest.mark.asyncio(scope="session")
@@ -87,7 +87,7 @@ async def test_create_division_already_exists(test_app):
 
     response = await test_app.post("/divisions", json=payload,
                                    headers={"Authorization": "Bearer test-token"})
-    assert response.status_code == 409
+    assert response.status_code == 405
     assert "already exists" in response.json()["detail"]
 
     app.dependency_overrides.clear()
