@@ -41,12 +41,12 @@ jobs:
         python-version: ['3.12']
 
     steps:
-    - uses: actions/checkout@v4.2.2
+    - uses: actions/checkout@v6.0.1
       with:
         fetch-depth: 0
 
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5.1.0
+      uses: actions/setup-python@v6.1.0
       with:
         python-version: ${{ matrix.python-version }}
 
@@ -58,6 +58,7 @@ jobs:
 
     - name: Setup Environment
       run: |
+        ls -l 
         export ENV_FILE="ci.env"
         export DATABASE_URL="mysql+asyncmy://${{ env.DB_USERNAME }}:${{ env.DB_PASSWORD }}@localhost:3306/${{ env.DB_NAME }}"
         alembic upgrade head
