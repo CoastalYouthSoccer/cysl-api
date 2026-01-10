@@ -1,14 +1,14 @@
 from pydantic import StringConstraints, UUID4, ConfigDict
 from typing_extensions import Annotated
 from .base import BaseCreate, Base
-from .address import Address
-from .association import Association
+from .address import  AddressCreate
+from .association import AssociationCreate
 
 
 class VenueCreate(BaseCreate):
     name: Annotated[str, StringConstraints(max_length=100)]
-    address: Address
-    association: Association
+    address: AddressCreate              # Assume the address is new
+    association_id: UUID4
 
     model_config = ConfigDict(
         from_attributes=True

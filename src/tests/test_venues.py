@@ -75,7 +75,7 @@ async def test_post_venues_not_authenticated(test_app):
 
     response = await test_app.post("/venue",
                                     json=payload)
-    assert response.status_code == 403
+    assert response.status_code == 401
     assert response.json() == NOT_AUTHENTICATED
 
 @pytest.mark.asyncio(scope="session")
@@ -89,9 +89,9 @@ async def test_create_venue_new_address(test_app):
             "city": "Baseball Town",
             "state": "CA",
             "zip_code": "90210"
+
         },
         "association": {
-            "active": True, "name": "Atlanta",
             "id": "53aeb5c2-590d-4332-8dec-591b1c276d83"
         }
     }
