@@ -35,8 +35,8 @@ def sample_auth0_user():
     }
 
 def test_get_auth0():
-    with patch("app.services.users.GetToken") as token_cls, \
-         patch("app.services.users.Auth0") as auth0_cls:
+    with patch("app.crud.user.GetToken") as token_cls, \
+         patch("app.service.user.Auth0") as auth0_cls:
 
         token_instance = token_cls.return_value
         token_instance.client_credentials.return_value = {
@@ -64,7 +64,7 @@ def test_parse_auth0_user(sample_auth0_user):
 def test_get_roles_per_user(auth0_mock, sample_auth0_user):
     auth0_mock.users.list_roles.return_value = sample_auth0_user["roles"]
 
-    with patch("app.services.users.get_auth0", return_value=auth0_mock):
+    with patch("app.service.user.get_auth0", return_value=auth0_mock):
         users = users_service.get_roles_per_user([sample_auth0_user])
 
     assert len(users) == 1
@@ -78,7 +78,7 @@ async def test_get_users_with_query(auth0_mock, sample_auth0_user):
     }
     auth0_mock.users.list_roles.return_value = sample_auth0_user["roles"]
 
-    with patch("app.services.users.get_auth0", return_value=auth0_mock):
+    with patch("app.service.user.get_auth0", return_value=auth0_mock):
         users = await users_service.get_users(
             given_name="Test", family_name="User"
         )
@@ -91,7 +91,7 @@ async def test_get_user_by_id(auth0_mock, sample_auth0_user):
     auth0_mock.users.get.return_value = sample_auth0_user
     auth0_mock.users.list_roles.return_value = sample_auth0_user["roles"]
 
-    with patch("app.services.users.get_auth0", return_value=auth0_mock):
+    with patch("app.service.user.get_auth0", return_value=auth0_mock):
         user = await users_service.get_user_by_id("auth0|123")
 
     assert user.user_id == "auth0|123"
@@ -109,8 +109,8 @@ async def test_update_user(auth0_mock, sample_auth0_user):
 
     user = users_service.parse_auth0_user(sample_auth0_user)
 
-    with patch("app.services.users.get_auth0", return_value=auth0_mock), \
-         patch("app.services.users.get_user_by_id", AsyncMock(return_value=user)):
+    with patch("app.service.user.get_auth0", return_value=auth0_mock), \
+         patch("app.service.user.get_user_by_id", AsyncMock(return_value=user)):
 
         result = await users_service.update_user(user)
 
@@ -126,7 +126,7 @@ async def test_deactivate_user(auth0_mock):
         "roles": [{"id": "r1"}]
     }
 
-    with patch("app.services.users.get_auth0", return_value=auth0_mock):
+    with patch("app.service.user.get_auth0", return_value=auth0_mock):
         await users_service.deactivate_user("auth0|123")
 
     auth0_mock.users.update.assert_called_once()

@@ -85,7 +85,7 @@ async def test_create_division_already_exists(test_app):
     )
     assert response.status_code == 201
 
-    response = await test_app.post("/divisions", json=payload,
+    response = await test_app.post("/division", json=payload,
                                    headers={"Authorization": "Bearer test-token"})
     assert response.status_code == 405
     assert "already exists" in response.json()["detail"]
