@@ -39,7 +39,7 @@ async def test_post_divisions_not_authenticated(test_app):
         "name": "Failed Division", "active": True
     }
 
-    response = await test_app.post("/divisions",
+    response = await test_app.post("/division",
                                     json=division_payload)
     assert response.status_code == 403
     assert response.json() == NOT_AUTHENTICATED
@@ -57,7 +57,7 @@ async def test_create_division_success(test_app):
     app.dependency_overrides[divisions_module.verify_write_divisions] = mock_verify_dependency
 
     response = await test_app.post(
-        "/divisions",
+        "/division",
         json=division_payload,
         headers={"Authorization": "Bearer test-token"}
     )
@@ -79,7 +79,7 @@ async def test_create_division_already_exists(test_app):
     app.dependency_overrides[divisions_module.verify_write_divisions] = mock_verify_dependency
 
     response = await test_app.post(
-        "/divisions",
+        "/division",
         json=payload,
         headers={"Authorization": "Bearer test-token"}
     )

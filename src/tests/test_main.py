@@ -22,6 +22,6 @@ def test_ping(test_client):
 #    assert response.json() == {"ping": "pong!"}
 
 def test_post_misconducts_not_authenticated(test_client):
-    response = test_client.post("/misconducts")
-    assert response.status_code == 403
+    response = test_client.post("/misconduct")
+    assert response.status_code == 401
     assert response.json() == NOT_AUTHENTICATED
