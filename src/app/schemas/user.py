@@ -4,7 +4,6 @@ from pydantic import BaseModel
 class Role(BaseModel):
     id: str
     name: str
-    description: str
 
 
 class User(BaseModel):

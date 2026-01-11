@@ -112,16 +112,13 @@ async def create_venue(session: AsyncSession, item: VenueCreate):
         raise HTTPException(status_code=409, detail=msg)
 
     temp = await get_association_by_id(session,
-                                    id=item.association.id)
-    if not temp:
-        logger.info(msg)
-        raise HTTPException(status_code=409, detail=msg)
-    
+                                    id=item.association_id)
+
     address = await read_create_address(session, address=item.address)
     active = True if item.active is None else item.active
     db_item = VenueModel(name=item.name, active=active,
                          address_id=address.id,
-                         association_id=item.association.id)
+                         association_id=item.association_id)
     try:
         session.add(db_item)
         await session.commit()
