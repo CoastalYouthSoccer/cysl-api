@@ -6,6 +6,7 @@ on:
       - 'src/**'
       - 'Dockerfile'
       - '.dockerignore'
+      - '.github/workflows/build-deploy.yml'
     branches:
       - '**'
       - '!releases/**'
@@ -41,12 +42,12 @@ jobs:
         python-version: ['3.12']
 
     steps:
-    - uses: actions/checkout@v4.2.2
+    - uses: actions/checkout@v6.0.1
       with:
         fetch-depth: 0
 
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5.1.0
+      uses: actions/setup-python@v6.1.0
       with:
         python-version: ${{ matrix.python-version }}
 
@@ -58,7 +59,7 @@ jobs:
 
     - name: Setup Environment
       run: |
-        cp ci.env .env
+        export ENV_FILE="ci.env"
         export DATABASE_URL="mysql+asyncmy://${{ env.DB_USERNAME }}:${{ env.DB_PASSWORD }}@localhost:3306/${{ env.DB_NAME }}"
         alembic upgrade head
         cd tests
@@ -66,13 +67,14 @@ jobs:
 
     - name: Test with pytest
       run: |
+        export ENV_FILE="ci.env"
         export DATABASE_URL="mysql+asyncmy://${{ env.DB_USERNAME }}:${{ env.DB_PASSWORD }}@localhost:3306/${{ env.DB_NAME }}"
-        coverage run -m pytest --junitxml=coverage.xml || true
+        coverage run -m pytest --junitxml=coverage.xml
         coverage xml -o coverage.xml
         sed -i 's@'$GITHUB_WORKSPACE'@/github/workspace/@g' coverage.xml
 
     - name: SonarCloud Scan
-      uses: SonarSource/sonarcloud-github-action@v3.1.0
+      uses: SonarSource/sonarqube-scan-action@v7.0.0
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -97,7 +99,7 @@ jobs:
           sudo ./update_cysl_backend.sh ${{ github.sha }}
 
   docker_build_push:
-#  if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
     needs: [build_deploy]
     runs-on: ubuntu-latest
     permissions:

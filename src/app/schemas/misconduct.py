@@ -1,5 +1,6 @@
 from datetime import datetime
 from .base import Base, BaseCreate
+from pydantic import ConfigDict
 
 
 class Misconduct(Base):
@@ -26,8 +27,9 @@ class Misconduct(Base):
     offense: str
     description: str
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(
+        from_attributes=True
+    )
 
 
 class MisconductCreate(BaseCreate):
@@ -53,3 +55,7 @@ class MisconductCreate(BaseCreate):
     minute: int
     offense: str
     description: str
+
+    model_config = ConfigDict(
+        from_attributes=True
+    )

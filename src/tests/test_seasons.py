@@ -34,9 +34,9 @@ async def test_post_seasons_not_authenticated(test_app):
         "season_length": 8, "active": True
     }
 
-    response = await test_app.post("/seasons",
+    response = await test_app.post("/season",
                                     json=payload)
-    assert response.status_code == 403
+    assert response.status_code == 401
     assert response.json() == NOT_AUTHENTICATED
 
 @pytest.mark.asyncio(scope="session")
@@ -53,7 +53,7 @@ async def test_create_season_success(test_app):
     app.dependency_overrides[seasons_module.verify_write_seasons] = mock_verify_dependency
 
     response = await test_app.post(
-        "/seasons",
+        "/season",
         json=payload,
         headers={"Authorization": "Bearer test-token"}
     )
@@ -76,13 +76,13 @@ async def test_create_season_already_exists(test_app):
     app.dependency_overrides[seasons_module.verify_write_seasons] = mock_verify_dependency
 
     response = await test_app.post(
-        "/seasons",
+        "/season",
         json=payload,
         headers={"Authorization": "Bearer test-token"}
     )
     assert response.status_code == 201
 
-    response = await test_app.post("/seasons", json=payload,
+    response = await test_app.post("/season", json=payload,
                                    headers={"Authorization": "Bearer test-token"})
     assert response.status_code == 409
     assert "already exists" in response.json()["detail"]

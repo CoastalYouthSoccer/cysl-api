@@ -1,4 +1,4 @@
-from pydantic import UUID4
+from pydantic import UUID4, ConfigDict
 from .base import BaseCreate
 
 
@@ -10,12 +10,14 @@ class VenueRuleCreate(BaseCreate):
     venue: str
     sub_venue: str
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(
+        from_attributes=True
+    )
 
 
 class VenueRule(VenueRuleCreate):
     id: UUID4
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(
+        from_attributes=True
+    )

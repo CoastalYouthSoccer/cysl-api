@@ -9,7 +9,7 @@ from app.dependencies import auth
 
 router = APIRouter()
 
-@router.post("/misconducts", response_model=Misconduct, status_code=201)
+@router.post("/misconduct", response_model=Misconduct, status_code=201)
 async def new_misconduct(item: MisconductCreate, db: Session=Depends(get_session),
                     _: str = Security(auth.verify,
                     scopes=['write:misconduct'])):

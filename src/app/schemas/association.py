@@ -1,5 +1,5 @@
 from typing import Optional
-from pydantic import StringConstraints, Field
+from pydantic import StringConstraints, Field, ConfigDict
 from typing_extensions import Annotated
 from uuid import UUID
 from .base import BaseCreate
@@ -13,8 +13,9 @@ class AssociationCreate(BaseCreate):
     registrar: Optional[UUID] = Field(default=None)
     active: Optional[bool] = True
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(
+        from_attributes=True
+    )
 
 
 class Association(AssociationCreate):

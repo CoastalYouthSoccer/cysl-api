@@ -22,4 +22,4 @@ done
 
 DB_USER="${DB_USER:-root}"
 DB_PASSWORD="${DB_PASSWORD:-testrootpass}"
-DB_NAME="${DB_NAME:-testdb}"
+DB_NAME="${DB_NAME:-test_database}"

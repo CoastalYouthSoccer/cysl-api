@@ -10,16 +10,20 @@ async def test_read_associations(test_app):
     expected_results = [
         {
             "id": "53aeb5c2-590d-4332-8dec-591b1c276d83", "name": "Atlanta",
-            "active": True
+            "president": None, "secretary": None, "assignor": None, 
+            "registrar": None,"active": True
         }, {
             "id": "7297e8d0-0d1c-49c7-a3fa-814b809cfafc", "name": "Chicago",
-            "active": True            
+            "president": None, "secretary": None, "assignor": None, 
+            "registrar": None,"active": True
         }, {
             "id": "a3cb9efb-73e8-4758-b547-6b8fb5fd2ba1", "name": "Boston",
-            "active": True
+            "president": None, "secretary": None, "assignor": None, 
+            "registrar": None,"active": True
         }, {
             "id": "d61a1dfb-ebe4-46ac-8210-7e8ecebc7c2d", "name": "Detroit",
-            "active": True
+            "president": None, "secretary": None, "assignor": None, 
+            "registrar": None,"active": True
         }
     ]
 
@@ -37,14 +41,14 @@ async def test_read_associations(test_app):
     app.dependency_overrides.clear()
 
 @pytest.mark.asyncio(scope="session")
-async def test_post_associations_not_authenticated(test_app):
+async def test_post_association_not_authenticated(test_app):
     payload = {
         "name": "Bad Association", "active": True
     }
 
-    response = await test_app.post("/associations",
+    response = await test_app.post("/association",
                                     json=payload)
-    assert response.status_code == 403
+    assert response.status_code == 401
     assert response.json() == NOT_AUTHENTICATED
 
 @pytest.mark.asyncio(scope="session")
@@ -60,7 +64,7 @@ async def test_create_association_success(test_app):
     app.dependency_overrides[associations_module.verify_write_associations] = mock_verify_dependency
 
     response = await test_app.post(
-        "/associations",
+        "/association",
         json=payload,
         headers={"Authorization": "Bearer test-token"}
     )
@@ -82,13 +86,13 @@ async def test_create_association_already_exists(test_app):
     app.dependency_overrides[associations_module.verify_write_associations] = mock_verify_dependency
 
     response = await test_app.post(
-        "/associations",
+        "/association",
         json=payload,
         headers={"Authorization": "Bearer test-token"}
     )
     assert response.status_code == 201
 
-    response = await test_app.post("/associations", json=payload,
+    response = await test_app.post("/association", json=payload,
                                    headers={"Authorization": "Bearer test-token"})
     assert response.status_code == 409
     assert "already exists" in response.json()["detail"]
@@ -99,7 +103,8 @@ async def test_create_association_already_exists(test_app):
 async def test_read_association_by_name_found(test_app):
     expected_results = [{
         "id": "53aeb5c2-590d-4332-8dec-591b1c276d83", "name": "Atlanta",
-        "active": True
+        "president": None, "secretary": None, "assignor": None, 
+        "registrar": None,"active": True
     }]
 
     async def mock_verify_dependency():
@@ -138,7 +143,8 @@ async def test_read_association_by_name_not_found(test_app):
 async def test_read_association_by_id_found(test_app):
     expected_results = {
         "id": "53aeb5c2-590d-4332-8dec-591b1c276d83", "name": "Atlanta",
-        "active": True
+        "president": None, "secretary": None, "assignor": None, 
+        "registrar": None,"active": True
     }
 
     async def mock_verify_dependency():
