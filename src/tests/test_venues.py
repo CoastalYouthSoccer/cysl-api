@@ -239,14 +239,14 @@ async def test_read_venue_by_name_not_found(test_app):
 @pytest.mark.asyncio(scope="session")
 async def test_read_venue_by_id_found(test_app):
     expected_results = {
-        'active': True, 'name': 'Boston Venue 1', 'address':
+        'active': True, 'name': 'Atlanta Venue', 'address':
         {
-            'active': True, 'address1': '85 Main St',
-            'address2': None, 'city': 'Boston',
-            'state': 'MA', 'zip_code': '02135',
+            'active': True, 'address1': '100 Main Street',
+            'address2': None, 'city': 'Atlanta',
+            'state': 'GA', 'zip_code': '30303',
         },
-        'association_id': 'a3cb9efb-73e8-4758-b547-6b8fb5fd2ba1',
-        'id': 'a6d69d3e-de15-4d4e-8c18-5aa6252f0bd3'
+        'association_id': '53aeb5c2-590d-4332-8dec-591b1c276d83',
+        'id': 'b6a95d67-9542-49a5-9e20-b4732fd68309'
     }
 
     async def mock_verify_dependency():
@@ -256,7 +256,7 @@ async def test_read_venue_by_id_found(test_app):
     app.dependency_overrides[venues_module.verify_read_venues] = mock_verify_dependency
 
     response = await test_app.get(
-        "/venue/a6d69d3ede154d4e8c185aa6252f0bd3",
+        "/venue/b6a95d67954249a59e20b4732fd68309",
         headers={"Authorization": "Bearer test-token"}
     )
     assert response.status_code == 200
