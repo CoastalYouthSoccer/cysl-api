@@ -35,6 +35,14 @@ class Settings(BaseSettings):
     db_encryption_key: str
     hmac_secret: str
 
+    @field_validator('otel_insecure')
+    @classmethod
+    def parse_otel_insecure(cls, v):
+        """Parse otel_insecure boolean from string"""
+        if isinstance(v, str):
+            return v.lower() in ('true', '1', 'yes', 'on')
+        return bool(v)
+
     @field_validator("log_level")
     @classmethod
     def validate_log_level(cls, v: str) -> str:
