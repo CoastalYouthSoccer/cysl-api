@@ -35,11 +35,13 @@ class Settings(BaseSettings):
     db_encryption_key: str
     hmac_secret: str
 
-    @field_validator('otel_insecure')
+    @field_validator('otel_insecure', mode='before')
     @classmethod
     def parse_otel_insecure(cls, v):
         """Parse otel_insecure boolean from string"""
         if isinstance(v, str):
+            # Handle quoted strings like '"True"'
+            v = v.strip('"').strip("'")
             return v.lower() in ('true', '1', 'yes', 'on')
         return bool(v)
 
