@@ -113,7 +113,7 @@ jobs:
 
     - name: Build image
       run: |
-        docker build . --tag ${{ env.IMAGE_NAME}}:latest --label "runnumber=${GITHUB_RUN_ID}"
+        docker build . --tag ${{ env.IMAGE_NAME}} --label "runnumber=${GITHUB_RUN_ID}"
 
     - name: Run Trivy vulnerability scanner in fs mode
       uses: aquasecurity/trivy-action@0.33.1
@@ -137,6 +137,7 @@ jobs:
         [ "$VERSION" == "main" ] && VERSION=latest
         echo IMAGE_ID=$IMAGE_ID
         echo VERSION=$VERSION
-        docker tag ${{ env.IMAGE_NAME }}:latest $IMAGE_ID:$VERSION
+        docker tag ${{ env.IMAGE_NAME }} $IMAGE_ID:$VERSION
+        docker tag ${{ env.IMAGE_NAME }} $IMAGE_ID:latest
         docker push $IMAGE_ID:latest
         docker push $IMAGE_ID:$VERSION
