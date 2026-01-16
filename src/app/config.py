@@ -38,9 +38,7 @@ class Settings(BaseSettings):
     @field_validator('otel_insecure', mode='before')
     @classmethod
     def parse_bool(cls, v):
-        """Parse boolean from string"""
-        print(f"DEBUG: otel_insecure raw value: {v!r} (type: {type(v).__name__})")
-    
+        """Parse boolean from string"""    
         if isinstance(v, bool):
             return v
         if isinstance(v, str):
