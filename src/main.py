@@ -16,9 +16,6 @@ from app.dependencies import auth
 
 config = get_settings()
 
-for key, value in config.model_dump().items(): 
-    print(f"{key}: {value}") 
-
 logging.basicConfig(stream=stdout,
                     level=config.log_level)
 logger = logging.getLogger(__name__)
