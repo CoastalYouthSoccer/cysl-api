@@ -37,12 +37,17 @@ class Settings(BaseSettings):
 
     @field_validator('otel_insecure', mode='before')
     @classmethod
-    def parse_otel_insecure(cls, v):
-        """Parse otel_insecure boolean from string"""
+    def parse_bool(cls, v):
+        """Parse boolean from string"""
+        print(f"DEBUG: otel_insecure raw value: {v!r} (type: {type(v).__name__})")
+    
+        if isinstance(v, bool):
+            return v
         if isinstance(v, str):
-            # Handle quoted strings like '"True"'
-            v = v.strip('"').strip("'")
-            return v.lower() in ('true', '1', 'yes', 'on')
+            v = v.strip().strip('"').strip("'")
+            result = v.lower() in ('true', '1', 'yes', 'on')
+            print(f"DEBUG: Parsed to: {result}")
+            return result
         return bool(v)
 
     @field_validator("log_level")
