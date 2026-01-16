@@ -1,6 +1,5 @@
 from sys import stdout
 import logging
-import base64
 
 from fastapi import FastAPI, Security
 from fastapi.security import HTTPBearer
@@ -16,6 +15,9 @@ from app.config import get_settings
 from app.dependencies import auth
 
 config = get_settings()
+
+for key, value in config.model_dump().items(): 
+    print(f"{key}: {value}") 
 
 logging.basicConfig(stream=stdout,
                     level=config.log_level)

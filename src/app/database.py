@@ -11,6 +11,7 @@ logger = logging.getLogger(__name__)
 
 config = get_settings()
 
+print ("Database URL:", config.database_url)
 async_engine = AsyncEngine(create_engine(config.database_url, echo=True, future=True))
 
 async def init_db():
