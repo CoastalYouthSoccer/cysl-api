@@ -11,7 +11,9 @@ from sqlalchemy.orm import sessionmaker
 logger = logging.getLogger(__name__)
 
 config = get_settings()
-
+print("Raw value:", repr(config.database_url))
+print("First char:", config.database_url[0] if config.database_url else "None")
+print("Last char:", config.database_url[-1] if config.database_url else "None")
 parsed = urlparse(config.database_url)
 
 # Encode just the password
