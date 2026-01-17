@@ -134,6 +134,7 @@ jobs:
       run: |
         docker load --input /tmp/${{ env.IMAGE_NAME }}.tar
         docker image ls -a
+
     - name: Log in to registry
       run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
@@ -143,13 +144,17 @@ jobs:
         IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
 
         VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-
         [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-
         [ "$VERSION" == "main" ] && VERSION=latest
+
+        # Get the built image tag from previous job
+        BUILT_IMAGE=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep ${{ env.IMAGE_NAME }} | head -n 1)
+        
         echo IMAGE_ID=$IMAGE_ID
         echo VERSION=$VERSION
-        docker tag ${{ env.IMAGE_NAME }} $IMAGE_ID:$VERSION
-        docker tag ${{ env.IMAGE_NAME }} $IMAGE_ID:latest
+        echo BUILT_IMAGE=$BUILT_IMAGE
+        
+        docker tag $BUILT_IMAGE $IMAGE_ID:$VERSION
+        docker tag $BUILT_IMAGE $IMAGE_ID:latest
         docker push $IMAGE_ID:latest
         docker push $IMAGE_ID:$VERSION
