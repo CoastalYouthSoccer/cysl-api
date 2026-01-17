@@ -1,6 +1,5 @@
 from sys import stdout
 import logging
-import base64
 
 from fastapi import FastAPI, Security
 from fastapi.security import HTTPBearer
