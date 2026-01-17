@@ -22,7 +22,6 @@ if parsed.port:
     database_url += f":{parsed.port}"
 database_url += parsed.path
 
-print(f"DEBUG: Database URL: {database_url}")
 async_engine = AsyncEngine(create_engine(database_url, echo=True, future=True))
 
 async def init_db():
