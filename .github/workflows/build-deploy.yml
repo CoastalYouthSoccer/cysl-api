@@ -118,7 +118,7 @@ jobs:
   docker_push:
     needs: [test_and_build]
     runs-on: ubuntu-latest
-#    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
     permissions:
       packages: write
       contents: read
