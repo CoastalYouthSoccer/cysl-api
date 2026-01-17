@@ -44,7 +44,6 @@ class Settings(BaseSettings):
         if isinstance(v, str):
             v = v.strip().strip('"').strip("'")
             result = v.lower() in ('true', '1', 'yes', 'on')
-            print(f"DEBUG: Parsed to: {result}")
             return result
         return bool(v)
 

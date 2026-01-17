@@ -11,10 +11,7 @@ from sqlalchemy.orm import sessionmaker
 logger = logging.getLogger(__name__)
 
 config = get_settings()
-print("Raw value:", repr(config.database_url))
-print("First char:", config.database_url[0] if config.database_url else "None")
-print("Last char:", config.database_url[-1] if config.database_url else "None")
-parsed = urlparse(config.database_url)
+parsed = urlparse(config.database_url.strip('"').strip("'"))
 
 # Encode just the password
 encoded_password = quote_plus(parsed.password) if parsed.password else ''
